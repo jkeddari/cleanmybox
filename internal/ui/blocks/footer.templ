@@ -1,0 +1,14 @@
+package blocks
+
+templ Footer() {
+  <footer class="border-t border-border py-6 text-xs text-muted-foreground">
+    <div class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
+      <span>CleanMyBox - Secure one-shot mailbox cleanup</span>
+      <span id="copyright"></span>
+    </div>
+    <script>
+      var el = document.getElementById('copyright');
+      if (el) el.textContent = 'Copyright © ' + new Date().getFullYear() + ' CleanMyBox';
+    </script>
+  </footer>
+}

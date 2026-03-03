@@ -49,6 +49,12 @@ func (s *Server) routes() http.Handler {
 	ui := web.New(s.authSvc, s.cleaner)
 
 	mux.Handle("GET /assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(filepath.Clean("assets")))))
+	mux.HandleFunc("GET /robots.txt", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filepath.Clean("assets/robots.txt"))
+	})
+	mux.HandleFunc("GET /sitemap.xml", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filepath.Clean("assets/sitemap.xml"))
+	})
 	mux.HandleFunc("GET /", ui.HomePage)
 	mux.HandleFunc("GET /login", ui.LoginPage)
 	mux.HandleFunc("GET /cleanup", ui.CleanupPage)

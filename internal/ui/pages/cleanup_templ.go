@@ -8,9 +8,12 @@ package pages
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/jkeddari/cleanmybox/internal/ui/layouts"
+import (
+	"github.com/jkeddari/cleanmybox/internal/ui/blocks"
+	"github.com/jkeddari/cleanmybox/internal/ui/layouts"
+)
 
-func Cleanup(sessionID string, canceled bool) templ.Component {
+func Cleanup(loggedIn bool, sessionID string, canceled bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -43,17 +46,21 @@ func Cleanup(sessionID string, canceled bool) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8\"><header class=\"flex items-center justify-between\"><a href=\"/\" class=\"flex items-center gap-3\"><div class=\"flex h-10 w-10 items-center justify-center rounded-xl bg-orange-700 font-semibold text-white\">C</div><div><p class=\"text-xl font-semibold tracking-tight\">cleanmybox</p><p class=\"text-xs text-neutral-500\">One-shot inbox cleanup</p></div></a></header><main class=\"mt-8 space-y-6\">")
+			templ_7745c5c3_Err = blocks.Navbar(loggedIn).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <div class=\"mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8\"><main class=\"space-y-6\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			if canceled {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"rounded-2xl border border-yellow-300 bg-yellow-50 p-5\"><h2 class=\"text-lg font-semibold\">Payment canceled</h2><p class=\"mt-1 text-sm text-neutral-600\">Your checkout was canceled. You can start again anytime.</p></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"rounded-2xl border border-border bg-muted p-5\"><h2 class=\"text-lg font-semibold\">Payment canceled</h2><p class=\"mt-1 text-sm text-muted-foreground\">Your checkout was canceled. You can start again anytime.</p></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else if sessionID == "" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"rounded-2xl border bg-white p-5\"><h2 class=\"text-lg font-semibold\">Waiting for payment session</h2><p class=\"mt-1 text-sm text-neutral-600\">Missing session_id in URL. Please retry from the pricing section.</p></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"rounded-2xl border border-border bg-card p-5\"><h2 class=\"text-lg font-semibold\">Waiting for payment session</h2><p class=\"mt-1 text-sm text-muted-foreground\">Missing session_id in URL. Please retry from the pricing section.</p></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -71,7 +78,7 @@ func Cleanup(sessionID string, canceled bool) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\" hx-trigger=\"load, every 2s\" hx-swap=\"outerHTML\" class=\"rounded-2xl border bg-white p-6 shadow-sm\"><p class=\"text-sm text-neutral-500\">Loading cleanup status...</p></div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\" hx-trigger=\"load, every 2s\" hx-swap=\"outerHTML\" class=\"rounded-2xl border border-border bg-card p-6 shadow-sm\"><p class=\"text-sm text-muted-foreground\">Loading cleanup status...</p></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -80,9 +87,18 @@ func Cleanup(sessionID string, canceled bool) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
+			templ_7745c5c3_Err = blocks.Footer().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 			return nil
 		})
-		templ_7745c5c3_Err = layouts.Base("Cleanup - CleanMyBox").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layouts.Base(layouts.SEOProps{
+			Title:       "Cleanup Status - CleanMyBox",
+			Description: "Follow your CleanMyBox cleanup job progress in real time after checkout.",
+			Path:        "/cleanup",
+			Robots:      "noindex, nofollow",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

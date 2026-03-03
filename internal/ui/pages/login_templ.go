@@ -8,9 +8,12 @@ package pages
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/jkeddari/cleanmybox/internal/ui/layouts"
+import (
+	"github.com/jkeddari/cleanmybox/internal/ui/blocks"
+	"github.com/jkeddari/cleanmybox/internal/ui/layouts"
+)
 
-func Login() templ.Component {
+func Login(loggedIn bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -43,13 +46,26 @@ func Login() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"mx-auto flex min-h-screen max-w-6xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8\"><div class=\"w-full max-w-md rounded-2xl border bg-white p-8 shadow-sm\"><a href=\"/\" class=\"inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm hover:bg-neutral-50\">← Back to home</a><h1 class=\"mt-6 text-3xl font-bold\">Login</h1><p class=\"mt-2 text-sm text-neutral-600\">Choose your mailbox provider. For now, Google is available.</p><div class=\"mt-8 space-y-3\"><a href=\"/auth/google\" class=\"inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold hover:bg-neutral-50\"><span>G</span> <span>Continue with Google</span></a> <button type=\"button\" disabled class=\"inline-flex w-full items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-3 text-sm text-neutral-400\"><span>O</span> <span>Outlook (coming soon)</span></button></div><p class=\"mt-6 text-xs text-neutral-500\">You can connect only one mailbox provider per cleanup run.</p></div></div>")
+			templ_7745c5c3_Err = blocks.Navbar(loggedIn).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <div class=\"mx-auto flex min-h-[calc(100vh-140px)] w-full max-w-6xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8\"><div class=\"w-full max-w-lg rounded-3xl border border-border bg-card p-8 shadow-sm\"><a href=\"/\" class=\"inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted\">← Back to home</a><h1 class=\"mt-6 text-3xl font-bold\">Connect your mailbox</h1><p class=\"mt-2 text-sm text-muted-foreground\">Start with Google. More providers like Outlook will be available soon.</p><div class=\"mt-8 space-y-3\"><a href=\"/auth/google\" class=\"inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-muted px-4 py-3 text-sm font-semibold hover:bg-accent hover:text-accent-foreground\"><span>G</span> <span>Continue with Google</span></a> <button type=\"button\" disabled class=\"inline-flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border px-4 py-3 text-sm text-muted-foreground\"><span>O</span> <span>Outlook (coming soon)</span></button></div><p class=\"mt-6 text-xs text-muted-foreground\">One provider per cleanup run. Sessions are short-lived for privacy.</p></div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = blocks.Footer().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = layouts.Base("Login - CleanMyBox").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layouts.Base(layouts.SEOProps{
+			Title:       "Login - CleanMyBox",
+			Description: "Connect your Google mailbox to start a one-shot cleanup run with CleanMyBox.",
+			Path:        "/login",
+			Robots:      "noindex, nofollow",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

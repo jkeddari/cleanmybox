@@ -1,137 +1,296 @@
 package pages
 
 import (
+  "github.com/jkeddari/cleanmybox/internal/ui/blocks"
+  "github.com/jkeddari/cleanmybox/internal/ui/components/icon"
   "github.com/jkeddari/cleanmybox/internal/ui/layouts"
 )
 
 templ Home(loggedIn bool) {
-  @layouts.Base("CleanMyBox - Fast mailbox cleaning") {
-    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-      <header class="flex items-center justify-between">
-        <a href="/" class="flex items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-700 font-semibold text-white">C</div>
-          <div>
-            <p class="text-xl font-semibold tracking-tight">cleanmybox</p>
-            <p class="text-xs text-neutral-500">One-shot inbox cleanup</p>
-          </div>
-        </a>
-        if loggedIn {
-          <span class="rounded-full border bg-white px-3 py-1 text-sm">Connected</span>
-        } else {
-          <a href="/login" class="rounded-lg border bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50">Login</a>
-        }
-      </header>
+  @layouts.Base(layouts.SEOProps{
+    Title:       "CleanMyBox - One-shot Gmail cleanup with safe unsubscribe",
+    Description: "Clean your Gmail in one run. Detect newsletters, unsubscribe safely, and track cleanup progress in real time with Clean and CleanPlus.",
+    Path:        "/",
+    Robots:      "index, follow",
+  }) {
+    @blocks.Navbar(loggedIn)
 
-      <main class="space-y-16 py-10">
-        <section class="grid gap-8 lg:grid-cols-2 lg:items-center">
-          <div class="space-y-5">
-            <span class="inline-flex rounded-full border bg-white px-3 py-1 text-xs">Fast mailbox cleaning</span>
-            <h1 class="text-4xl font-bold leading-tight md:text-5xl">Delete the noise, keep the important.</h1>
-            <p class="text-lg text-neutral-600">CleanMyBox detects newsletters, unsubscribes automatically, and optionally runs cautious AI analysis.</p>
-            <div class="flex flex-wrap items-center gap-3">
+    <main class="mx-auto w-full max-w-6xl space-y-20 px-4 py-10 sm:px-6 lg:px-8">
+      <section class="grid gap-10 py-8 lg:grid-cols-2 lg:items-center">
+        <div class="space-y-6">
+          <span class="inline-flex rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">Built for inbox clarity</span>
+          <h1 class="text-5xl font-bold leading-tight tracking-tight sm:text-6xl">
+            Clean your mailbox
+            <br/>
+            <span class="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">without breaking trust.</span>
+          </h1>
+          <p class="max-w-2xl text-lg text-muted-foreground">
+            CleanMyBox scans newsletters, filters low-value emails, and keeps your important messages safe with conservative rules.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3">
               if loggedIn {
-                <a href="#plans" class="rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white hover:bg-neutral-800">Pick a plan</a>
+                <a href="#pricing" class="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90">Choose Clean or CleanPlus</a>
               } else {
-                <a href="/login" class="rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white hover:bg-neutral-800">Login</a>
+                <a href="/login" class="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90">Login</a>
               }
-              <span class="text-sm text-neutral-500">One-shot, no account retention.</span>
-            </div>
+            <span class="text-sm text-muted-foreground">One-shot payment. No account retention.</span>
           </div>
-          <div class="rounded-2xl border bg-white p-6 shadow-sm">
-            <p class="text-sm text-neutral-500">Example cleanup report</p>
-            <p class="mt-2 text-4xl font-bold">1,284</p>
-            <p class="text-sm text-neutral-500">emails deleted</p>
-            <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
-              <div class="rounded-lg bg-neutral-50 p-3"><p class="font-semibold">923</p><p class="text-neutral-500">newsletters</p></div>
-              <div class="rounded-lg bg-neutral-50 p-3"><p class="font-semibold">241</p><p class="text-neutral-500">spam</p></div>
-              <div class="rounded-lg bg-neutral-50 p-3"><p class="font-semibold">84</p><p class="text-neutral-500">useless</p></div>
-              <div class="rounded-lg bg-neutral-50 p-3"><p class="font-semibold">36</p><p class="text-neutral-500">unsure</p></div>
-            </div>
-          </div>
-        </section>
-
-        <section id="plans" class="space-y-5">
-          <div>
-            <h2 class="text-3xl font-bold">Pick your cleanup</h2>
-            <p class="text-neutral-600">One-time payment, no subscription.</p>
-          </div>
-          <div class="grid gap-5 lg:grid-cols-2">
-            @PlanCard("Clean", "7 EUR", "Newsletter cleanup + automatic unsubscribe.", []string{"Header-based newsletter detection", "Mark as read + move to trash", "Automatic unsubscribe", "Detailed final report"}, loggedIn)
-            @PlanCard("CleanPlus", "11 EUR", "Everything in Clean + cautious AI analysis.", []string{"Very cautious LLM analysis", "Delete spam + clearly useless", "Verdicts: spam, useless, legit, unsure", "Detailed final report"}, loggedIn)
-          </div>
-        </section>
-
-        <section class="space-y-4">
-          <h2 class="text-3xl font-bold">FAQ</h2>
-          <div class="grid gap-4 lg:grid-cols-3">
-            @FaqCard("Do you store my emails?", "No. We process messages during cleanup and keep short-lived job state only.")
-            @FaqCard("What does CleanPlus do?", "It adds a conservative AI review to remove spam or clearly useless emails.")
-            @FaqCard("Can I run it again later?", "Yes. Each cleanup is one-shot and can be run again anytime.")
-          </div>
-        </section>
-      </main>
-
-      <footer class="border-t py-5 text-xs text-neutral-500">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <span>CleanMyBox - One-shot inbox cleanup</span>
-          <span id="copyright"></span>
         </div>
-      </footer>
-    </div>
+
+          <div id="hero-snapshot" class="rounded-3xl border border-border bg-card p-6 shadow-sm">
+          <p class="text-sm text-muted-foreground">Live processing snapshot</p>
+          <p class="mt-2 text-4xl font-bold"><span data-counter="scanned" data-target="214">214</span> / <span data-counter="total" data-target="214">214</span></p>
+          <p class="text-sm text-muted-foreground">emails scanned safely</p>
+            <div class="mt-5 h-2 overflow-hidden rounded-full bg-muted">
+            <div data-progress="bar" class="h-full w-0 rounded-full bg-primary"></div>
+            </div>
+            <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+            <div class="rounded-lg bg-muted p-3"><p class="font-semibold" data-counter="newsletters" data-target="62">62</p><p class="text-muted-foreground">newsletters</p></div>
+            <div class="rounded-lg bg-muted p-3"><p class="font-semibold" data-counter="spam" data-target="27">27</p><p class="text-muted-foreground">spam</p></div>
+            <div class="rounded-lg bg-muted p-3"><p class="font-semibold" data-counter="useless" data-target="14">14</p><p class="text-muted-foreground">useless</p></div>
+            <div class="rounded-lg bg-muted p-3"><p class="font-semibold" data-counter="kept" data-target="111">111</p><p class="text-muted-foreground">kept</p></div>
+            </div>
+          </div>
+      </section>
+
+      <section id="features" class="py-24">
+        <div class="mx-auto max-w-3xl space-y-3 text-center">
+          <h2 class="text-4xl font-bold tracking-tight">Mailbox cleanup that stays fast and safe</h2>
+          <p class="text-lg text-muted-foreground">A focused workflow with conservative decisions, production-grade reliability, and real-time execution visibility.</p>
+        </div>
+        <div class="mx-auto mt-16 grid max-w-6xl gap-8 md:grid-cols-2 lg:grid-cols-3">
+          @FeatureCard("scan", "Header-based newsletter detection", "Use RFC signals like List-Unsubscribe and List-Id to find bulk email precisely.")
+          @FeatureCard("shield", "Automatic unsubscribe flow", "Attempt unsubscribe links safely and keep an auditable success or failure trail.")
+          @FeatureCard("spark", "Cautious AI for CleanPlus", "Apply conservative AI decisions and default to keep whenever confidence is low.")
+          @FeatureCard("lock", "Security-first by design", "Run with short-lived OAuth sessions and avoid long-term mailbox data retention.")
+          @FeatureCard("server", "Go-native resilient backend", "Process jobs with idempotent webhook handling and robust worker execution.")
+          @FeatureCard("pulse", "Live job monitoring", "Track progress in real time with heartbeat checks and stalled-job detection.")
+        </div>
+      </section>
+
+      <section class="py-16">
+        <div class="text-center">
+          <p class="text-sm font-medium uppercase tracking-wide text-muted-foreground">Built and powered by Golang</p>
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-8 grayscale opacity-60">
+            @PoweredItem("zap", "Fast")
+            @PoweredItem("pulse", "Real-time monitoring")
+            @PoweredItem("lock", "Secure")
+            @PoweredItem("server", "Resilient")
+            @PoweredItem("shield", "Privacy-first")
+          </div>
+        </div>
+      </section>
+
+      <section id="pricing" class="py-24">
+        <div class="mx-auto max-w-3xl text-center">
+          <h2 class="text-4xl font-bold">Choose Your Plan</h2>
+          <p class="mt-4 text-lg text-muted-foreground">Pay once per cleanup run. No subscription. No hidden fees.</p>
+        </div>
+        <div class="mx-auto mt-16 grid max-w-6xl gap-8 lg:grid-cols-2">
+          @PlanCard("Clean", "7 EUR", "per cleanup", []string{"Header-based newsletter detection", "Mark as read and move to trash", "Automatic unsubscribe attempts", "Detailed cleanup report"}, loggedIn, "clean", false)
+          @PlanCard("CleanPlus", "11 EUR", "per cleanup", []string{"Everything in Clean", "Conservative AI delete decisions", "Spam and useless email filtering", "Live progress and resilient processing"}, loggedIn, "cleanplus", true)
+        </div>
+      </section>
+
+      <section id="faq" class="py-24">
+        <div class="mx-auto max-w-3xl">
+          <div class="text-center">
+            <h2 class="text-4xl font-bold">Frequently Asked Questions</h2>
+            <p class="mt-4 text-lg text-muted-foreground">Everything you need to know about CleanMyBox</p>
+          </div>
+          <div class="mt-16">
+            <div class="">
+            @FaqItem("Do you keep my mailbox data?", "No long-term retention. Cleanup jobs keep short-lived operational state only.")
+            @FaqItem("How does Clean work?", "Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks as read, moves to trash, and attempts safe unsubscribe actions.")
+            @FaqItem("How does CleanPlus use AI?", "CleanPlus adds a conservative AI pass for spam and clearly useless emails. If the model is unsure, the message is kept.")
+            @FaqItem("Is this a subscription?", "No. Pricing is one-shot per cleanup run. You only pay when you launch a run.")
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    @blocks.Footer()
 
     <script>
-      document.getElementById('copyright').textContent = `Copyright © ${new Date().getFullYear()} CleanMyBox`
-
       async function startCheckout(plan) {
         try {
           const res = await fetch('/api/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ plan }),
-          })
-          if (!res.ok) throw new Error('checkout failed')
-          const data = await res.json()
-          if (data && data.url) window.location.href = data.url
-        } catch (e) {
-          alert('Payment error. Please try again.')
+            body: JSON.stringify({ plan })
+          });
+          if (!res.ok) throw new Error('checkout failed');
+          const data = await res.json();
+          if (data && data.url) window.location.href = data.url;
+        } catch (_) {
+          alert('Payment error. Please try again.');
         }
       }
+      window.cboxStartCheckout = startCheckout;
+      document.querySelectorAll('[data-checkout-plan]').forEach((el) => {
+        el.addEventListener('click', () => {
+          const plan = el.getAttribute('data-checkout-plan');
+          if (plan) window.cboxStartCheckout(plan);
+        });
+      });
 
-      window.cboxStartCheckout = startCheckout
+      (function animateHeroSnapshot() {
+        var root = document.getElementById('hero-snapshot');
+        if (!root) return;
+
+        var counters = root.querySelectorAll('[data-counter]');
+        var progressBar = root.querySelector('[data-progress="bar"]');
+        var durationMs = 2000;
+        var hasAnimated = false;
+
+        function applyFinalValues() {
+          counters.forEach(function(el) {
+            var target = Number(el.getAttribute('data-target') || '0');
+            el.textContent = String(target);
+          });
+          if (progressBar) progressBar.style.width = '100%';
+        }
+
+        function easeOutCubic(t) {
+          return 1 - Math.pow(1 - t, 3);
+        }
+
+        function startAnimation() {
+          if (hasAnimated) return;
+          hasAnimated = true;
+
+          var reduceMotion = false;
+          try {
+            reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          } catch (_) {}
+          if (reduceMotion) {
+            applyFinalValues();
+            return;
+          }
+
+          counters.forEach(function(el) {
+            el.textContent = '0';
+          });
+          if (progressBar) progressBar.style.width = '0%';
+
+          var start = 0;
+          function step(ts) {
+            if (!start) start = ts;
+            var elapsed = ts - start;
+            var progress = Math.min(elapsed / durationMs, 1);
+            var eased = easeOutCubic(progress);
+
+            counters.forEach(function(el) {
+              var target = Number(el.getAttribute('data-target') || '0');
+              var value = Math.round(target * eased);
+              el.textContent = String(value);
+            });
+            if (progressBar) {
+              progressBar.style.width = String(eased * 100) + '%';
+            }
+
+            if (progress < 1) {
+              window.requestAnimationFrame(step);
+            } else {
+              applyFinalValues();
+            }
+          }
+
+          window.requestAnimationFrame(step);
+        }
+
+        if ('IntersectionObserver' in window) {
+          var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                startAnimation();
+                observer.disconnect();
+              }
+            });
+          }, { threshold: 0.35 });
+          observer.observe(root);
+        } else {
+          startAnimation();
+        }
+      })();
     </script>
   }
 }
 
-templ PlanCard(name, price, desc string, items []string, loggedIn bool) {
-  <div class="flex h-full flex-col rounded-2xl border bg-white p-6 shadow-sm">
-    <div class="flex items-start justify-between gap-3">
-      <h3 class="text-xl font-semibold">{ name }</h3>
-      <span class="text-2xl font-bold text-orange-700">{ price }</span>
-    </div>
-    <p class="mt-2 text-sm text-neutral-600">{ desc }</p>
-    <ul class="mt-4 flex-1 space-y-2 text-sm text-neutral-600">
-      for _, item := range items {
-        <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-orange-700"></span>{ item }</li>
-      }
-    </ul>
-    <div class="mt-6">
-      if loggedIn {
-        if name == "Clean" {
-          <button type="button" onclick="window.cboxStartCheckout('clean')" class="w-full rounded-xl bg-neutral-900 px-4 py-3 text-sm font-semibold text-white hover:bg-neutral-800">Start Clean</button>
-        } else {
-          <button type="button" onclick="window.cboxStartCheckout('cleanplus')" class="w-full rounded-xl bg-neutral-900 px-4 py-3 text-sm font-semibold text-white hover:bg-neutral-800">Start CleanPlus</button>
-        }
-      } else {
-        <a href="/login" class="inline-flex w-full items-center justify-center rounded-xl border bg-white px-4 py-3 text-sm font-semibold hover:bg-neutral-50">Login</a>
-      }
+templ FeatureCard(iconName, title, description string) {
+  <div class="group relative">
+    <div class="flex flex-col items-center gap-4 sm:items-start">
+      <div class="inline-flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+        @icon.Icon(iconName, "size-6")
+      </div>
+      <div class="text-center sm:text-left">
+        <h3 class="text-lg font-semibold">{ title }</h3>
+        <p class="mt-2 text-sm text-muted-foreground">{ description }</p>
+      </div>
     </div>
   </div>
 }
 
-templ FaqCard(question, answer string) {
-  <div class="rounded-2xl border bg-white p-5 shadow-sm">
-    <h4 class="text-base font-semibold">{ question }</h4>
-    <p class="mt-2 text-sm text-neutral-600">{ answer }</p>
+templ PoweredItem(iconName, label string) {
+  <div class="flex items-center gap-2">
+    <span>@icon.Icon(iconName, "size-8")</span>
+    <span>{ label }</span>
   </div>
+}
+
+templ PlanCard(name, price, period string, items []string, loggedIn bool, planKey string, popular bool) {
+  <div class="relative w-full overflow-hidden h-full text-card-foreground rounded-lg bg-card flex flex-col shadow-xs">
+    if popular {
+      <div class="absolute -right-12 top-6 rotate-45 bg-primary px-12 py-1 text-xs font-semibold text-primary-foreground">POPULAR</div>
+    }
+    <div class="space-y-1.5 pb-0 flex flex-col p-6">
+      <h3 class="tracking-tight text-lg leading-none font-semibold">{ name }</h3>
+    </div>
+    <div class="flex-col flex-1 pt-6 p-6 flex">
+      <div class="flex items-baseline gap-1">
+        <span class="text-5xl font-bold tracking-tight">{ price }</span>
+        <span class="text-muted-foreground">{ period }</span>
+      </div>
+      <ul class="mt-8 space-y-4 flex-1">
+      for _, item := range items {
+        <li class="flex items-start gap-3">
+          @icon.Icon("check", "mt-0.5 size-4 shrink-0 text-primary")
+          <span class="text-sm">{ item }</span>
+        </li>
+      }
+      </ul>
+      <div class="mt-auto pt-8">
+        if loggedIn {
+          if popular {
+            <button type="button" data-checkout-plan={ planKey } class="transition-all dark:aria-invalid:ring-destructive/40 disabled:pointer-events-none aria-invalid:ring-destructive/20 px-4 [&_svg]:shrink-0 py-2 has-[>svg]:px-3 whitespace-nowrap shrink-0 bg-primary shadow-xs rounded-md text-sm focus-visible:ring-ring/50 text-primary-foreground hover:bg-primary/90 inline-flex gap-2 cursor-pointer items-center [&_svg]:pointer-events-none focus-visible:ring-[3px] h-9 disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 outline-none w-full font-medium focus-visible:border-ring justify-center aria-invalid:border-destructive">Start { name }</button>
+          } else {
+            <button type="button" data-checkout-plan={ planKey } class="outline-none items-center rounded-md gap-2 aria-invalid:border-destructive hover:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 aria-invalid:ring-destructive/20 cursor-pointer w-full inline-flex focus-visible:ring-[3px] dark:aria-invalid:ring-destructive/40 px-4 focus-visible:border-ring whitespace-nowrap shrink-0 [&_svg]:shrink-0 dark:border-input h-9 transition-all font-medium [&_svg]:pointer-events-none shadow-xs hover:bg-accent disabled:pointer-events-none bg-background justify-center disabled:opacity-50 dark:bg-input/30 text-sm border focus-visible:ring-ring/50 dark:hover:bg-input/50 py-2 has-[>svg]:px-3">Start { name }</button>
+          }
+        } else {
+          if popular {
+            <a href="/login" class="transition-all dark:aria-invalid:ring-destructive/40 disabled:pointer-events-none aria-invalid:ring-destructive/20 px-4 [&_svg]:shrink-0 py-2 has-[>svg]:px-3 whitespace-nowrap shrink-0 bg-primary shadow-xs rounded-md text-sm focus-visible:ring-ring/50 text-primary-foreground hover:bg-primary/90 inline-flex gap-2 cursor-pointer items-center [&_svg]:pointer-events-none focus-visible:ring-[3px] h-9 disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 outline-none w-full font-medium focus-visible:border-ring justify-center aria-invalid:border-destructive">Login</a>
+          } else {
+            <a href="/login" class="outline-none items-center rounded-md gap-2 aria-invalid:border-destructive hover:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 aria-invalid:ring-destructive/20 cursor-pointer w-full inline-flex focus-visible:ring-[3px] dark:aria-invalid:ring-destructive/40 px-4 focus-visible:border-ring whitespace-nowrap shrink-0 [&_svg]:shrink-0 dark:border-input h-9 transition-all font-medium [&_svg]:pointer-events-none shadow-xs hover:bg-accent disabled:pointer-events-none bg-background justify-center disabled:opacity-50 dark:bg-input/30 text-sm border focus-visible:ring-ring/50 dark:hover:bg-input/50 py-2 has-[>svg]:px-3">Login</a>
+          }
+        }
+      </div>
+    </div>
+  </div>
+}
+
+templ FaqItem(question, answer string) {
+  <details name="accordion" class="group border-b last:border-b-0 [&[open]>summary>svg]:rotate-180">
+    <summary class="disabled:opacity-50 list-none [&::-webkit-details-marker]:hidden flex text-left font-medium outline-none flex-1 focus-visible:ring-ring/50 rounded-md transition-all focus-visible:ring-[3px] py-4 hover:underline cursor-pointer disabled:pointer-events-none text-sm items-start justify-between gap-4 focus-visible:border-ring">
+      { question }
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4 shrink-0 translate-y-0.5 transition-transform duration-200 text-muted-foreground">
+        <path d="m6 9 6 6 6-6"></path>
+      </svg>
+    </summary>
+    <div class="overflow-hidden pb-4 text-sm text-muted-foreground">
+      <p>{ answer }</p>
+    </div>
+  </details>
 }

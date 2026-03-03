@@ -1,23 +1,169 @@
 package layouts
 
-templ Base(title string) {
+type SEOProps struct {
+  Title       string
+  Description string
+  Path        string
+  Robots      string
+}
+
+templ Base(props ...SEOProps) {
+  {{
+    seo := SEOProps{
+      Title:       "CleanMyBox - One-shot Gmail cleanup",
+      Description: "CleanMyBox helps you clean Gmail safely with one-shot pricing. Detect newsletters, unsubscribe automatically, and track cleanup progress in real time.",
+      Path:        "/",
+      Robots:      "index, follow",
+    }
+    if len(props) > 0 {
+      if props[0].Title != "" {
+        seo.Title = props[0].Title
+      }
+      if props[0].Description != "" {
+        seo.Description = props[0].Description
+      }
+      if props[0].Path != "" {
+        seo.Path = props[0].Path
+      }
+      if props[0].Robots != "" {
+        seo.Robots = props[0].Robots
+      }
+    }
+    canonicalURL := "https://cleanmybox.io" + seo.Path
+    socialImageURL := "https://cleanmybox.io/assets/img/social-preview.png"
+  }}
   <!doctype html>
   <html lang="en">
     <head>
       <meta charset="UTF-8"/>
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <title>{ title }</title>
-      <meta name="description" content="CleanMyBox helps you clean your mailbox with one-shot payment flows."/>
+      <title>{ seo.Title }</title>
+      <meta name="description" content={ seo.Description }/>
+      <meta name="author" content="CleanMyBox"/>
+      <meta name="robots" content={ seo.Robots }/>
+      <meta name="keywords" content="gmail cleanup, inbox cleaner, unsubscribe newsletters, mailbox cleanup, one-shot email cleaning, cleanplus ai"/>
+      <link rel="canonical" href={ canonicalURL }/>
+
+      <meta property="og:title" content={ seo.Title }/>
+      <meta property="og:description" content={ seo.Description }/>
+      <meta property="og:type" content="website"/>
+      <meta property="og:url" content={ canonicalURL }/>
+      <meta property="og:site_name" content="CleanMyBox"/>
+      <meta property="og:image" content={ socialImageURL }/>
+      <meta property="og:image:width" content="1200"/>
+      <meta property="og:image:height" content="630"/>
+      <meta property="og:image:alt" content="CleanMyBox - Secure one-shot Gmail cleanup"/>
+
+      <meta name="twitter:card" content="summary_large_image"/>
+      <meta name="twitter:title" content={ seo.Title }/>
+      <meta name="twitter:description" content={ seo.Description }/>
+      <meta name="twitter:image" content={ socialImageURL }/>
+      <meta name="twitter:image:alt" content="CleanMyBox - Secure one-shot Gmail cleanup"/>
+      <meta name="theme-color" content="#000000"/>
+
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "CleanMyBox",
+          "url": "https://cleanmybox.io",
+          "description": "One-shot Gmail cleanup with newsletter detection, safe unsubscribe, and live progress tracking.",
+          "inLanguage": "en"
+        }
+      </script>
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "CleanMyBox",
+          "url": "https://cleanmybox.io",
+          "logo": "https://cleanmybox.io/assets/img/social-preview.png"
+        }
+      </script>
+      if seo.Path == "/" {
+        <script type="application/ld+json">
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Do you keep my mailbox data?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No long-term retention. Cleanup jobs keep short-lived operational state only."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How does Clean work?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks as read, moves to trash, and attempts safe unsubscribe actions."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How does CleanPlus use AI?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "CleanPlus adds a conservative AI pass for spam and clearly useless emails. If the model is unsure, the message is kept."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is this a subscription?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Pricing is one-shot per cleanup run. You only pay when you launch a run."
+                }
+              }
+            ]
+          }
+        </script>
+      }
+
       <link rel="stylesheet" href="/assets/css/output.css"/>
       <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
       <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+      <script>
+        (function() {
+          try {
+            var stored = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (stored === 'dark' || (!stored && prefersDark)) {
+              document.documentElement.classList.add('dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+            }
+          } catch (_) {}
+        })();
+      </script>
       <style>
         :root { color-scheme: light; }
-        body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+        :root.dark { color-scheme: dark; }
       </style>
     </head>
-    <body class="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(255,240,220,0.9),rgba(248,244,238,0.95)_55%,rgba(244,240,233,0.9)_100%)] text-neutral-900">
+    <body class="min-h-screen bg-background text-foreground">
       { children... }
+      <script>
+        (function() {
+          function apply(next) {
+            if (next === 'dark') {
+              document.documentElement.classList.add('dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+            }
+            try { localStorage.setItem('theme', next); } catch (_) {}
+          }
+          document.querySelectorAll('[data-theme-switcher]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              var isDark = document.documentElement.classList.contains('dark');
+              apply(isDark ? 'light' : 'dark');
+            });
+          });
+        })();
+      </script>
     </body>
   </html>
 }

@@ -9,6 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/jkeddari/cleanmybox/internal/ui/blocks"
+	"github.com/jkeddari/cleanmybox/internal/ui/components/icon"
 	"github.com/jkeddari/cleanmybox/internal/ui/layouts"
 )
 
@@ -45,71 +47,129 @@ func Home(loggedIn bool) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8\"><header class=\"flex items-center justify-between\"><a href=\"/\" class=\"flex items-center gap-3\"><div class=\"flex h-10 w-10 items-center justify-center rounded-xl bg-orange-700 font-semibold text-white\">C</div><div><p class=\"text-xl font-semibold tracking-tight\">cleanmybox</p><p class=\"text-xs text-neutral-500\">One-shot inbox cleanup</p></div></a> ")
+			templ_7745c5c3_Err = blocks.Navbar(loggedIn).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main class=\"mx-auto w-full max-w-6xl space-y-20 px-4 py-10 sm:px-6 lg:px-8\"><section class=\"grid gap-10 py-8 lg:grid-cols-2 lg:items-center\"><div class=\"space-y-6\"><span class=\"inline-flex rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground\">Built for inbox clarity</span><h1 class=\"text-5xl font-bold leading-tight tracking-tight sm:text-6xl\">Clean your mailbox<br><span class=\"bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent\">without breaking trust.</span></h1><p class=\"max-w-2xl text-lg text-muted-foreground\">CleanMyBox scans newsletters, filters low-value emails, and keeps your important messages safe with conservative rules.</p><div class=\"flex flex-wrap items-center gap-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			if loggedIn {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<span class=\"rounded-full border bg-white px-3 py-1 text-sm\">Connected</span>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"#pricing\" class=\"rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90\">Choose Clean or CleanPlus</a> ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a href=\"/login\" class=\"rounded-lg border bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50\">Login</a>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a href=\"/login\" class=\"rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90\">Login</a> ")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</header><main class=\"space-y-16 py-10\"><section class=\"grid gap-8 lg:grid-cols-2 lg:items-center\"><div class=\"space-y-5\"><span class=\"inline-flex rounded-full border bg-white px-3 py-1 text-xs\">Fast mailbox cleaning</span><h1 class=\"text-4xl font-bold leading-tight md:text-5xl\">Delete the noise, keep the important.</h1><p class=\"text-lg text-neutral-600\">CleanMyBox detects newsletters, unsubscribes automatically, and optionally runs cautious AI analysis.</p><div class=\"flex flex-wrap items-center gap-3\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<span class=\"text-sm text-muted-foreground\">One-shot payment. No account retention.</span></div></div><div id=\"hero-snapshot\" class=\"rounded-3xl border border-border bg-card p-6 shadow-sm\"><p class=\"text-sm text-muted-foreground\">Live processing snapshot</p><p class=\"mt-2 text-4xl font-bold\"><span data-counter=\"scanned\" data-target=\"214\">214</span> / <span data-counter=\"total\" data-target=\"214\">214</span></p><p class=\"text-sm text-muted-foreground\">emails scanned safely</p><div class=\"mt-5 h-2 overflow-hidden rounded-full bg-muted\"><div data-progress=\"bar\" class=\"h-full w-0 rounded-full bg-primary\"></div></div><div class=\"mt-5 grid grid-cols-2 gap-3 text-sm\"><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"newsletters\" data-target=\"62\">62</p><p class=\"text-muted-foreground\">newsletters</p></div><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"spam\" data-target=\"27\">27</p><p class=\"text-muted-foreground\">spam</p></div><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"useless\" data-target=\"14\">14</p><p class=\"text-muted-foreground\">useless</p></div><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"kept\" data-target=\"111\">111</p><p class=\"text-muted-foreground\">kept</p></div></div></div></section><section id=\"features\" class=\"py-24\"><div class=\"mx-auto max-w-3xl space-y-3 text-center\"><h2 class=\"text-4xl font-bold tracking-tight\">Mailbox cleanup that stays fast and safe</h2><p class=\"text-lg text-muted-foreground\">A focused workflow with conservative decisions, production-grade reliability, and real-time execution visibility.</p></div><div class=\"mx-auto mt-16 grid max-w-6xl gap-8 md:grid-cols-2 lg:grid-cols-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if loggedIn {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a href=\"#plans\" class=\"rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white hover:bg-neutral-800\">Pick a plan</a> ")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<a href=\"/login\" class=\"rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white hover:bg-neutral-800\">Login</a> ")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<span class=\"text-sm text-neutral-500\">One-shot, no account retention.</span></div></div><div class=\"rounded-2xl border bg-white p-6 shadow-sm\"><p class=\"text-sm text-neutral-500\">Example cleanup report</p><p class=\"mt-2 text-4xl font-bold\">1,284</p><p class=\"text-sm text-neutral-500\">emails deleted</p><div class=\"mt-5 grid grid-cols-2 gap-3 text-sm\"><div class=\"rounded-lg bg-neutral-50 p-3\"><p class=\"font-semibold\">923</p><p class=\"text-neutral-500\">newsletters</p></div><div class=\"rounded-lg bg-neutral-50 p-3\"><p class=\"font-semibold\">241</p><p class=\"text-neutral-500\">spam</p></div><div class=\"rounded-lg bg-neutral-50 p-3\"><p class=\"font-semibold\">84</p><p class=\"text-neutral-500\">useless</p></div><div class=\"rounded-lg bg-neutral-50 p-3\"><p class=\"font-semibold\">36</p><p class=\"text-neutral-500\">unsure</p></div></div></div></section><section id=\"plans\" class=\"space-y-5\"><div><h2 class=\"text-3xl font-bold\">Pick your cleanup</h2><p class=\"text-neutral-600\">One-time payment, no subscription.</p></div><div class=\"grid gap-5 lg:grid-cols-2\">")
+			templ_7745c5c3_Err = FeatureCard("scan", "Header-based newsletter detection", "Use RFC signals like List-Unsubscribe and List-Id to find bulk email precisely.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = PlanCard("Clean", "7 EUR", "Newsletter cleanup + automatic unsubscribe.", []string{"Header-based newsletter detection", "Mark as read + move to trash", "Automatic unsubscribe", "Detailed final report"}, loggedIn).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = FeatureCard("shield", "Automatic unsubscribe flow", "Attempt unsubscribe links safely and keep an auditable success or failure trail.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = PlanCard("CleanPlus", "11 EUR", "Everything in Clean + cautious AI analysis.", []string{"Very cautious LLM analysis", "Delete spam + clearly useless", "Verdicts: spam, useless, legit, unsure", "Detailed final report"}, loggedIn).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = FeatureCard("spark", "Cautious AI for CleanPlus", "Apply conservative AI decisions and default to keep whenever confidence is low.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div></section><section class=\"space-y-4\"><h2 class=\"text-3xl font-bold\">FAQ</h2><div class=\"grid gap-4 lg:grid-cols-3\">")
+			templ_7745c5c3_Err = FeatureCard("lock", "Security-first by design", "Run with short-lived OAuth sessions and avoid long-term mailbox data retention.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = FaqCard("Do you store my emails?", "No. We process messages during cleanup and keep short-lived job state only.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = FeatureCard("server", "Go-native resilient backend", "Process jobs with idempotent webhook handling and robust worker execution.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = FaqCard("What does CleanPlus do?", "It adds a conservative AI review to remove spam or clearly useless emails.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = FeatureCard("pulse", "Live job monitoring", "Track progress in real time with heartbeat checks and stalled-job detection.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = FaqCard("Can I run it again later?", "Yes. Each cleanup is one-shot and can be run again anytime.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></section><section class=\"py-16\"><div class=\"text-center\"><p class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Built and powered by Golang</p><div class=\"mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-8 grayscale opacity-60\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div></section></main><footer class=\"border-t py-5 text-xs text-neutral-500\"><div class=\"flex flex-wrap items-center justify-between gap-2\"><span>CleanMyBox - One-shot inbox cleanup</span> <span id=\"copyright\"></span></div></footer></div><script>\n      document.getElementById('copyright').textContent = `Copyright © ${new Date().getFullYear()} CleanMyBox`\n\n      async function startCheckout(plan) {\n        try {\n          const res = await fetch('/api/checkout', {\n            method: 'POST',\n            headers: { 'Content-Type': 'application/json' },\n            credentials: 'include',\n            body: JSON.stringify({ plan }),\n          })\n          if (!res.ok) throw new Error('checkout failed')\n          const data = await res.json()\n          if (data && data.url) window.location.href = data.url\n        } catch (e) {\n          alert('Payment error. Please try again.')\n        }\n      }\n\n      window.cboxStartCheckout = startCheckout\n    </script>")
+			templ_7745c5c3_Err = PoweredItem("zap", "Fast").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = PoweredItem("pulse", "Real-time monitoring").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = PoweredItem("lock", "Secure").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = PoweredItem("server", "Resilient").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = PoweredItem("shield", "Privacy-first").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div></div></section><section id=\"pricing\" class=\"py-24\"><div class=\"mx-auto max-w-3xl text-center\"><h2 class=\"text-4xl font-bold\">Choose Your Plan</h2><p class=\"mt-4 text-lg text-muted-foreground\">Pay once per cleanup run. No subscription. No hidden fees.</p></div><div class=\"mx-auto mt-16 grid max-w-6xl gap-8 lg:grid-cols-2\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = PlanCard("Clean", "7 EUR", "per cleanup", []string{"Header-based newsletter detection", "Mark as read and move to trash", "Automatic unsubscribe attempts", "Detailed cleanup report"}, loggedIn, "clean", false).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = PlanCard("CleanPlus", "11 EUR", "per cleanup", []string{"Everything in Clean", "Conservative AI delete decisions", "Spam and useless email filtering", "Live progress and resilient processing"}, loggedIn, "cleanplus", true).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div></section><section id=\"faq\" class=\"py-24\"><div class=\"mx-auto max-w-3xl\"><div class=\"text-center\"><h2 class=\"text-4xl font-bold\">Frequently Asked Questions</h2><p class=\"mt-4 text-lg text-muted-foreground\">Everything you need to know about CleanMyBox</p></div><div class=\"mt-16\"><div class=\"\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = FaqItem("Do you keep my mailbox data?", "No long-term retention. Cleanup jobs keep short-lived operational state only.").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = FaqItem("How does Clean work?", "Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks as read, moves to trash, and attempts safe unsubscribe actions.").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = FaqItem("How does CleanPlus use AI?", "CleanPlus adds a conservative AI pass for spam and clearly useless emails. If the model is unsure, the message is kept.").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = FaqItem("Is this a subscription?", "No. Pricing is one-shot per cleanup run. You only pay when you launch a run.").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div></div></div></section></main>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = blocks.Footer().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, " <script>\n      async function startCheckout(plan) {\n        try {\n          const res = await fetch('/api/checkout', {\n            method: 'POST',\n            headers: { 'Content-Type': 'application/json' },\n            credentials: 'include',\n            body: JSON.stringify({ plan })\n          });\n          if (!res.ok) throw new Error('checkout failed');\n          const data = await res.json();\n          if (data && data.url) window.location.href = data.url;\n        } catch (_) {\n          alert('Payment error. Please try again.');\n        }\n      }\n      window.cboxStartCheckout = startCheckout;\n      document.querySelectorAll('[data-checkout-plan]').forEach((el) => {\n        el.addEventListener('click', () => {\n          const plan = el.getAttribute('data-checkout-plan');\n          if (plan) window.cboxStartCheckout(plan);\n        });\n      });\n\n      (function animateHeroSnapshot() {\n        var root = document.getElementById('hero-snapshot');\n        if (!root) return;\n\n        var counters = root.querySelectorAll('[data-counter]');\n        var progressBar = root.querySelector('[data-progress=\"bar\"]');\n        var durationMs = 2000;\n        var hasAnimated = false;\n\n        function applyFinalValues() {\n          counters.forEach(function(el) {\n            var target = Number(el.getAttribute('data-target') || '0');\n            el.textContent = String(target);\n          });\n          if (progressBar) progressBar.style.width = '100%';\n        }\n\n        function easeOutCubic(t) {\n          return 1 - Math.pow(1 - t, 3);\n        }\n\n        function startAnimation() {\n          if (hasAnimated) return;\n          hasAnimated = true;\n\n          var reduceMotion = false;\n          try {\n            reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;\n          } catch (_) {}\n          if (reduceMotion) {\n            applyFinalValues();\n            return;\n          }\n\n          counters.forEach(function(el) {\n            el.textContent = '0';\n          });\n          if (progressBar) progressBar.style.width = '0%';\n\n          var start = 0;\n          function step(ts) {\n            if (!start) start = ts;\n            var elapsed = ts - start;\n            var progress = Math.min(elapsed / durationMs, 1);\n            var eased = easeOutCubic(progress);\n\n            counters.forEach(function(el) {\n              var target = Number(el.getAttribute('data-target') || '0');\n              var value = Math.round(target * eased);\n              el.textContent = String(value);\n            });\n            if (progressBar) {\n              progressBar.style.width = String(eased * 100) + '%';\n            }\n\n            if (progress < 1) {\n              window.requestAnimationFrame(step);\n            } else {\n              applyFinalValues();\n            }\n          }\n\n          window.requestAnimationFrame(step);\n        }\n\n        if ('IntersectionObserver' in window) {\n          var observer = new IntersectionObserver(function(entries) {\n            entries.forEach(function(entry) {\n              if (entry.isIntersecting) {\n                startAnimation();\n                observer.disconnect();\n              }\n            });\n          }, { threshold: 0.35 });\n          observer.observe(root);\n        } else {\n          startAnimation();\n        }\n      })();\n    </script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = layouts.Base("CleanMyBox - Fast mailbox cleaning").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layouts.Base(layouts.SEOProps{
+			Title:       "CleanMyBox - One-shot Gmail cleanup with safe unsubscribe",
+			Description: "Clean your Gmail in one run. Detect newsletters, unsubscribe safely, and track cleanup progress in real time with Clean and CleanPlus.",
+			Path:        "/",
+			Robots:      "index, follow",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -117,7 +177,7 @@ func Home(loggedIn bool) templ.Component {
 	})
 }
 
-func PlanCard(name, price, desc string, items []string, loggedIn bool) templ.Component {
+func FeatureCard(iconName, title, description string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -138,91 +198,41 @@ func PlanCard(name, price, desc string, items []string, loggedIn bool) templ.Com
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div class=\"flex h-full flex-col rounded-2xl border bg-white p-6 shadow-sm\"><div class=\"flex items-start justify-between gap-3\"><h3 class=\"text-xl font-semibold\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div class=\"group relative\"><div class=\"flex flex-col items-center gap-4 sm:items-start\"><div class=\"inline-flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = icon.Icon(iconName, "size-6").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</div><div class=\"text-center sm:text-left\"><h3 class=\"text-lg font-semibold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 109, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 230, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "</h3><span class=\"text-2xl font-bold text-orange-700\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</h3><p class=\"mt-2 text-sm text-muted-foreground\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(price)
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 110, Col: 62}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 231, Col: 67}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</span></div><p class=\"mt-2 text-sm text-neutral-600\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(desc)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 112, Col: 51}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</p><ul class=\"mt-4 flex-1 space-y-2 text-sm text-neutral-600\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		for _, item := range items {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<li class=\"flex items-center gap-2\"><span class=\"h-1.5 w-1.5 rounded-full bg-orange-700\"></span>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var7 string
-			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(item)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 115, Col: 110}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</li>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</ul><div class=\"mt-6\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if loggedIn {
-			if name == "Clean" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<button type=\"button\" onclick=\"window.cboxStartCheckout('clean')\" class=\"w-full rounded-xl bg-neutral-900 px-4 py-3 text-sm font-semibold text-white hover:bg-neutral-800\">Start Clean</button>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			} else {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<button type=\"button\" onclick=\"window.cboxStartCheckout('cleanplus')\" class=\"w-full rounded-xl bg-neutral-900 px-4 py-3 text-sm font-semibold text-white hover:bg-neutral-800\">Start CleanPlus</button>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-			}
-		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<a href=\"/login\" class=\"inline-flex w-full items-center justify-center rounded-xl border bg-white px-4 py-3 text-sm font-semibold hover:bg-neutral-50\">Login</a>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</p></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -230,7 +240,57 @@ func PlanCard(name, price, desc string, items []string, loggedIn bool) templ.Com
 	})
 }
 
-func FaqCard(question, answer string) templ.Component {
+func PoweredItem(iconName, label string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var6 == nil {
+			templ_7745c5c3_Var6 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<div class=\"flex items-center gap-2\"><span>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = icon.Icon(iconName, "size-8").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</span> <span>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(label)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 240, Col: 17}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</span></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func PlanCard(name, price, period string, items []string, loggedIn bool, planKey string, popular bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -251,33 +311,223 @@ func FaqCard(question, answer string) templ.Component {
 			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"rounded-2xl border bg-white p-5 shadow-sm\"><h4 class=\"text-base font-semibold\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"relative w-full overflow-hidden h-full text-card-foreground rounded-lg bg-card flex flex-col shadow-xs\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if popular {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"absolute -right-12 top-6 rotate-45 bg-primary px-12 py-1 text-xs font-semibold text-primary-foreground\">POPULAR</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<div class=\"space-y-1.5 pb-0 flex flex-col p-6\"><h3 class=\"tracking-tight text-lg leading-none font-semibold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var9 string
-		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(question)
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 134, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 250, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</h4><p class=\"mt-2 text-sm text-neutral-600\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</h3></div><div class=\"flex-col flex-1 pt-6 p-6 flex\"><div class=\"flex items-baseline gap-1\"><span class=\"text-5xl font-bold tracking-tight\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var10 string
-		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(answer)
+		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(price)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 135, Col: 53}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 254, Col: 63}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "</p></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "</span> <span class=\"text-muted-foreground\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var11 string
+		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(period)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 255, Col: 52}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</span></div><ul class=\"mt-8 space-y-4 flex-1\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for _, item := range items {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<li class=\"flex items-start gap-3\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = icon.Icon("check", "mt-0.5 size-4 shrink-0 text-primary").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<span class=\"text-sm\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var12 string
+			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(item)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 261, Col: 38}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</span></li>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</ul><div class=\"mt-auto pt-8\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if loggedIn {
+			if popular {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<button type=\"button\" data-checkout-plan=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var13 string
+				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(planKey)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 268, Col: 62}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\" class=\"transition-all dark:aria-invalid:ring-destructive/40 disabled:pointer-events-none aria-invalid:ring-destructive/20 px-4 [&_svg]:shrink-0 py-2 has-[>svg]:px-3 whitespace-nowrap shrink-0 bg-primary shadow-xs rounded-md text-sm focus-visible:ring-ring/50 text-primary-foreground hover:bg-primary/90 inline-flex gap-2 cursor-pointer items-center [&_svg]:pointer-events-none focus-visible:ring-[3px] h-9 disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 outline-none w-full font-medium focus-visible:border-ring justify-center aria-invalid:border-destructive\">Start ")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var14 string
+				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 268, Col: 646}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "</button>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			} else {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "<button type=\"button\" data-checkout-plan=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var15 string
+				templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(planKey)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 270, Col: 62}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "\" class=\"outline-none items-center rounded-md gap-2 aria-invalid:border-destructive hover:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 aria-invalid:ring-destructive/20 cursor-pointer w-full inline-flex focus-visible:ring-[3px] dark:aria-invalid:ring-destructive/40 px-4 focus-visible:border-ring whitespace-nowrap shrink-0 [&_svg]:shrink-0 dark:border-input h-9 transition-all font-medium [&_svg]:pointer-events-none shadow-xs hover:bg-accent disabled:pointer-events-none bg-background justify-center disabled:opacity-50 dark:bg-input/30 text-sm border focus-visible:ring-ring/50 dark:hover:bg-input/50 py-2 has-[>svg]:px-3\">Start ")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var16 string
+				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 270, Col: 715}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "</button>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+		} else {
+			if popular {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "<a href=\"/login\" class=\"transition-all dark:aria-invalid:ring-destructive/40 disabled:pointer-events-none aria-invalid:ring-destructive/20 px-4 [&_svg]:shrink-0 py-2 has-[>svg]:px-3 whitespace-nowrap shrink-0 bg-primary shadow-xs rounded-md text-sm focus-visible:ring-ring/50 text-primary-foreground hover:bg-primary/90 inline-flex gap-2 cursor-pointer items-center [&_svg]:pointer-events-none focus-visible:ring-[3px] h-9 disabled:opacity-50 [&_svg:not([class*='size-'])]:size-4 outline-none w-full font-medium focus-visible:border-ring justify-center aria-invalid:border-destructive\">Login</a>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			} else {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "<a href=\"/login\" class=\"outline-none items-center rounded-md gap-2 aria-invalid:border-destructive hover:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 aria-invalid:ring-destructive/20 cursor-pointer w-full inline-flex focus-visible:ring-[3px] dark:aria-invalid:ring-destructive/40 px-4 focus-visible:border-ring whitespace-nowrap shrink-0 [&_svg]:shrink-0 dark:border-input h-9 transition-all font-medium [&_svg]:pointer-events-none shadow-xs hover:bg-accent disabled:pointer-events-none bg-background justify-center disabled:opacity-50 dark:bg-input/30 text-sm border focus-visible:ring-ring/50 dark:hover:bg-input/50 py-2 has-[>svg]:px-3\">Login</a>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "</div></div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func FaqItem(question, answer string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var17 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var17 == nil {
+			templ_7745c5c3_Var17 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "<details name=\"accordion\" class=\"group border-b last:border-b-0 [&[open]>summary>svg]:rotate-180\"><summary class=\"disabled:opacity-50 list-none [&::-webkit-details-marker]:hidden flex text-left font-medium outline-none flex-1 focus-visible:ring-ring/50 rounded-md transition-all focus-visible:ring-[3px] py-4 hover:underline cursor-pointer disabled:pointer-events-none text-sm items-start justify-between gap-4 focus-visible:border-ring\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var18 string
+		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(question)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 287, Col: 16}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, " <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"size-4 shrink-0 translate-y-0.5 transition-transform duration-200 text-muted-foreground\"><path d=\"m6 9 6 6 6-6\"></path></svg></summary><div class=\"overflow-hidden pb-4 text-sm text-muted-foreground\"><p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var19 string
+		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(answer)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 293, Col: 17}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</p></div></details>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

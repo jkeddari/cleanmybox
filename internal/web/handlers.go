@@ -25,13 +25,13 @@ func (h *Handlers) HomePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handlers) LoginPage(w http.ResponseWriter, r *http.Request) {
-	h.render(w, r, pages.Login())
+	h.render(w, r, pages.Login(h.authSvc.IsLoggedIn(r)))
 }
 
 func (h *Handlers) CleanupPage(w http.ResponseWriter, r *http.Request) {
 	sessionID := strings.TrimSpace(r.URL.Query().Get("session_id"))
 	canceled := r.URL.Query().Get("canceled") == "1"
-	h.render(w, r, pages.Cleanup(sessionID, canceled))
+	h.render(w, r, pages.Cleanup(h.authSvc.IsLoggedIn(r), sessionID, canceled))
 }
 
 func (h *Handlers) JobFragment(w http.ResponseWriter, r *http.Request) {
