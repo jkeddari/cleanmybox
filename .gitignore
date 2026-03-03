@@ -12,11 +12,6 @@ dist/
 coverage.out
 *.test
 
-# Node / frontend
-ui/node_modules/
-ui/dist/
-ui/.vite/
-
 # Logs
 *.log
 npm-debug.log*

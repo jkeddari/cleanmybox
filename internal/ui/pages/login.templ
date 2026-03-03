@@ -1,0 +1,29 @@
+package pages
+
+import "github.com/jkeddari/cleanmybox/internal/ui/layouts"
+
+templ Login() {
+  @layouts.Base("Login - CleanMyBox") {
+    <div class="mx-auto flex min-h-screen max-w-6xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
+      <div class="w-full max-w-md rounded-2xl border bg-white p-8 shadow-sm">
+        <a href="/" class="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm hover:bg-neutral-50">← Back to home</a>
+        <h1 class="mt-6 text-3xl font-bold">Login</h1>
+        <p class="mt-2 text-sm text-neutral-600">Choose your mailbox provider. For now, Google is available.</p>
+
+        <div class="mt-8 space-y-3">
+          <a href="/auth/google" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-semibold hover:bg-neutral-50">
+            <span>G</span>
+            <span>Continue with Google</span>
+          </a>
+
+          <button type="button" disabled class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-3 text-sm text-neutral-400">
+            <span>O</span>
+            <span>Outlook (coming soon)</span>
+          </button>
+        </div>
+
+        <p class="mt-6 text-xs text-neutral-500">You can connect only one mailbox provider per cleanup run.</p>
+      </div>
+    </div>
+  }
+}

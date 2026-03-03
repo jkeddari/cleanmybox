@@ -5,11 +5,13 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"github.com/jkeddari/cleanmybox/internal/auth"
 	"github.com/jkeddari/cleanmybox/internal/cleaner"
 	"github.com/jkeddari/cleanmybox/internal/stripe"
+	"github.com/jkeddari/cleanmybox/internal/web"
 )
 
 type Config struct {
@@ -44,11 +46,18 @@ func (s *Server) Start() error {
 
 func (s *Server) routes() http.Handler {
 	mux := http.NewServeMux()
+	ui := web.New(s.authSvc, s.cleaner)
 
-	mux.HandleFunc("/auth/google", s.authSvc.HandleGoogleAuth)
-	mux.HandleFunc("/auth/google/callback", s.authSvc.HandleGoogleCallback)
+	mux.Handle("GET /assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(filepath.Clean("assets")))))
+	mux.HandleFunc("GET /", ui.HomePage)
+	mux.HandleFunc("GET /login", ui.LoginPage)
+	mux.HandleFunc("GET /cleanup", ui.CleanupPage)
+	mux.HandleFunc("GET /ui/job-fragment", ui.JobFragment)
 
-	mux.HandleFunc("/api/session", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /auth/google", s.authSvc.HandleGoogleAuth)
+	mux.HandleFunc("GET /auth/google/callback", s.authSvc.HandleGoogleCallback)
+
+	mux.HandleFunc("GET /api/session", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
@@ -56,7 +65,7 @@ func (s *Server) routes() http.Handler {
 		writeJSON(w, http.StatusOK, map[string]any{"loggedIn": s.authSvc.IsLoggedIn(r)})
 	})
 
-	mux.HandleFunc("/api/checkout", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("POST /api/checkout", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
@@ -93,7 +102,7 @@ func (s *Server) routes() http.Handler {
 		writeJSON(w, http.StatusOK, map[string]any{"url": url})
 	})
 
-	mux.HandleFunc("/webhook/stripe", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("POST /webhook/stripe", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
@@ -137,7 +146,7 @@ func (s *Server) routes() http.Handler {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	mux.HandleFunc("/api/job", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /api/job", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return
@@ -145,7 +154,7 @@ func (s *Server) routes() http.Handler {
 		http.Error(w, "missing job id in path", http.StatusBadRequest)
 	})
 
-	mux.HandleFunc("/api/job/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /api/job/", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 			return

@@ -1,0 +1,90 @@
+package pages
+
+import "fmt"
+
+templ JobStatus(view JobStatusView) {
+  if view.Found && (view.Status == "done" || view.Status == "error") {
+    <div id="job-status" class="rounded-2xl border bg-white p-6 shadow-sm">
+      @jobStatusContent(view)
+    </div>
+  } else {
+    <div id="job-status"
+         hx-get={ "/ui/job-fragment?session_id=" + view.SessionID }
+         hx-trigger="every 2s"
+         hx-swap="outerHTML"
+         class="rounded-2xl border bg-white p-6 shadow-sm">
+      @jobStatusContent(view)
+    </div>
+  }
+}
+
+templ jobStatusContent(view JobStatusView) {
+    if !view.Found {
+      <h2 class="text-xl font-semibold">Cleanup in progress</h2>
+      <p class="mt-1 text-sm text-neutral-600">Payment confirmed. Waiting for worker start...</p>
+      <div class="mt-4 h-2 overflow-hidden rounded-full bg-neutral-200">
+        <div class="h-full w-[8%] animate-pulse rounded-full bg-orange-700"></div>
+      </div>
+      <p class="mt-3 text-xs text-neutral-500">Session: { view.SessionID }</p>
+    } else {
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          if view.Status == "done" {
+            <h2 class="text-xl font-semibold">Cleanup result</h2>
+          } else if view.Status == "error" {
+            <h2 class="text-xl font-semibold">Cleanup failed</h2>
+          } else {
+            <h2 class="text-xl font-semibold">Cleanup in progress</h2>
+          }
+          <p class="text-sm text-neutral-600">Step: <span class="font-medium text-neutral-900">{ view.Step }</span></p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="rounded-full border px-3 py-1 text-xs">{ view.Plan }</span>
+          if view.DryRun {
+            <span class="rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs text-amber-700">Dry-run</span>
+          }
+        </div>
+      </div>
+
+      <div class="mt-5 h-2 overflow-hidden rounded-full bg-neutral-200">
+        <div class="h-full rounded-full bg-orange-700 transition-all duration-500" style={ "width: " + fmt.Sprintf("%d%%", view.ProgressPercent) }></div>
+      </div>
+
+      <div class="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-neutral-500">
+        <span>Current: { view.CurrentEmail }</span>
+        <span class="font-semibold text-neutral-900">{ view.ProcessedCount } / { view.TotalCount } emails processed</span>
+      </div>
+
+      <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-lg bg-neutral-50 p-3"><p class="text-xs text-neutral-500">Deleted</p><p class="text-xl font-semibold">{ view.Stats.Deleted }</p></div>
+        <div class="rounded-lg bg-neutral-50 p-3"><p class="text-xs text-neutral-500">Newsletters</p><p class="text-xl font-semibold">{ view.Stats.Newsletters }</p></div>
+        <div class="rounded-lg bg-neutral-50 p-3"><p class="text-xs text-neutral-500">Spam</p><p class="text-xl font-semibold">{ view.Stats.Spam }</p></div>
+        <div class="rounded-lg bg-neutral-50 p-3"><p class="text-xs text-neutral-500">Useless</p><p class="text-xl font-semibold">{ view.Stats.Useless }</p></div>
+      </div>
+
+      <div class="mt-3 grid gap-3 text-sm text-neutral-600 sm:grid-cols-2">
+        <p>AI deleted: <span class="font-semibold text-neutral-900">{ view.Stats.AIDeleted }</span></p>
+        <p>Total scanned: <span class="font-semibold text-neutral-900">{ view.Stats.TotalScanned }</span></p>
+        <p>Unsubscribed ok: <span class="font-semibold text-neutral-900">{ view.Stats.UnsubscribedOK }</span></p>
+        <p>Unsubscribed failed: <span class="font-semibold text-neutral-900">{ view.Stats.UnsubscribedFailed }</span></p>
+      </div>
+
+      <div class="mt-3 text-xs">
+        if view.Stale {
+          <span class="font-semibold text-red-600">Heartbeat: stalled ({ view.HeartbeatAgeSec }s ago)</span>
+        } else {
+          <span class="font-semibold text-neutral-700">Heartbeat: alive ({ view.HeartbeatAgeSec }s ago)</span>
+        }
+      </div>
+
+      if view.Error != "" {
+        <p class="mt-4 text-sm font-medium text-red-600">{ view.Error }</p>
+      }
+      if view.Status == "done" || view.Status == "error" {
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a href="/" class="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800">Run another cleanup</a>
+          <a href="/#plans" class="rounded-lg border bg-white px-4 py-2 text-sm font-semibold hover:bg-neutral-50">See plans</a>
+        </div>
+      }
+    }
+}

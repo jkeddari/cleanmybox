@@ -1,0 +1,137 @@
+package pages
+
+import (
+  "github.com/jkeddari/cleanmybox/internal/ui/layouts"
+)
+
+templ Home(loggedIn bool) {
+  @layouts.Base("CleanMyBox - Fast mailbox cleaning") {
+    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <header class="flex items-center justify-between">
+        <a href="/" class="flex items-center gap-3">
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-700 font-semibold text-white">C</div>
+          <div>
+            <p class="text-xl font-semibold tracking-tight">cleanmybox</p>
+            <p class="text-xs text-neutral-500">One-shot inbox cleanup</p>
+          </div>
+        </a>
+        if loggedIn {
+          <span class="rounded-full border bg-white px-3 py-1 text-sm">Connected</span>
+        } else {
+          <a href="/login" class="rounded-lg border bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50">Login</a>
+        }
+      </header>
+
+      <main class="space-y-16 py-10">
+        <section class="grid gap-8 lg:grid-cols-2 lg:items-center">
+          <div class="space-y-5">
+            <span class="inline-flex rounded-full border bg-white px-3 py-1 text-xs">Fast mailbox cleaning</span>
+            <h1 class="text-4xl font-bold leading-tight md:text-5xl">Delete the noise, keep the important.</h1>
+            <p class="text-lg text-neutral-600">CleanMyBox detects newsletters, unsubscribes automatically, and optionally runs cautious AI analysis.</p>
+            <div class="flex flex-wrap items-center gap-3">
+              if loggedIn {
+                <a href="#plans" class="rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white hover:bg-neutral-800">Pick a plan</a>
+              } else {
+                <a href="/login" class="rounded-xl bg-neutral-900 px-5 py-3 text-sm font-semibold text-white hover:bg-neutral-800">Login</a>
+              }
+              <span class="text-sm text-neutral-500">One-shot, no account retention.</span>
+            </div>
+          </div>
+          <div class="rounded-2xl border bg-white p-6 shadow-sm">
+            <p class="text-sm text-neutral-500">Example cleanup report</p>
+            <p class="mt-2 text-4xl font-bold">1,284</p>
+            <p class="text-sm text-neutral-500">emails deleted</p>
+            <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+              <div class="rounded-lg bg-neutral-50 p-3"><p class="font-semibold">923</p><p class="text-neutral-500">newsletters</p></div>
+              <div class="rounded-lg bg-neutral-50 p-3"><p class="font-semibold">241</p><p class="text-neutral-500">spam</p></div>
+              <div class="rounded-lg bg-neutral-50 p-3"><p class="font-semibold">84</p><p class="text-neutral-500">useless</p></div>
+              <div class="rounded-lg bg-neutral-50 p-3"><p class="font-semibold">36</p><p class="text-neutral-500">unsure</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="plans" class="space-y-5">
+          <div>
+            <h2 class="text-3xl font-bold">Pick your cleanup</h2>
+            <p class="text-neutral-600">One-time payment, no subscription.</p>
+          </div>
+          <div class="grid gap-5 lg:grid-cols-2">
+            @PlanCard("Clean", "7 EUR", "Newsletter cleanup + automatic unsubscribe.", []string{"Header-based newsletter detection", "Mark as read + move to trash", "Automatic unsubscribe", "Detailed final report"}, loggedIn)
+            @PlanCard("CleanPlus", "11 EUR", "Everything in Clean + cautious AI analysis.", []string{"Very cautious LLM analysis", "Delete spam + clearly useless", "Verdicts: spam, useless, legit, unsure", "Detailed final report"}, loggedIn)
+          </div>
+        </section>
+
+        <section class="space-y-4">
+          <h2 class="text-3xl font-bold">FAQ</h2>
+          <div class="grid gap-4 lg:grid-cols-3">
+            @FaqCard("Do you store my emails?", "No. We process messages during cleanup and keep short-lived job state only.")
+            @FaqCard("What does CleanPlus do?", "It adds a conservative AI review to remove spam or clearly useless emails.")
+            @FaqCard("Can I run it again later?", "Yes. Each cleanup is one-shot and can be run again anytime.")
+          </div>
+        </section>
+      </main>
+
+      <footer class="border-t py-5 text-xs text-neutral-500">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span>CleanMyBox - One-shot inbox cleanup</span>
+          <span id="copyright"></span>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      document.getElementById('copyright').textContent = `Copyright © ${new Date().getFullYear()} CleanMyBox`
+
+      async function startCheckout(plan) {
+        try {
+          const res = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ plan }),
+          })
+          if (!res.ok) throw new Error('checkout failed')
+          const data = await res.json()
+          if (data && data.url) window.location.href = data.url
+        } catch (e) {
+          alert('Payment error. Please try again.')
+        }
+      }
+
+      window.cboxStartCheckout = startCheckout
+    </script>
+  }
+}
+
+templ PlanCard(name, price, desc string, items []string, loggedIn bool) {
+  <div class="flex h-full flex-col rounded-2xl border bg-white p-6 shadow-sm">
+    <div class="flex items-start justify-between gap-3">
+      <h3 class="text-xl font-semibold">{ name }</h3>
+      <span class="text-2xl font-bold text-orange-700">{ price }</span>
+    </div>
+    <p class="mt-2 text-sm text-neutral-600">{ desc }</p>
+    <ul class="mt-4 flex-1 space-y-2 text-sm text-neutral-600">
+      for _, item := range items {
+        <li class="flex items-center gap-2"><span class="h-1.5 w-1.5 rounded-full bg-orange-700"></span>{ item }</li>
+      }
+    </ul>
+    <div class="mt-6">
+      if loggedIn {
+        if name == "Clean" {
+          <button type="button" onclick="window.cboxStartCheckout('clean')" class="w-full rounded-xl bg-neutral-900 px-4 py-3 text-sm font-semibold text-white hover:bg-neutral-800">Start Clean</button>
+        } else {
+          <button type="button" onclick="window.cboxStartCheckout('cleanplus')" class="w-full rounded-xl bg-neutral-900 px-4 py-3 text-sm font-semibold text-white hover:bg-neutral-800">Start CleanPlus</button>
+        }
+      } else {
+        <a href="/login" class="inline-flex w-full items-center justify-center rounded-xl border bg-white px-4 py-3 text-sm font-semibold hover:bg-neutral-50">Login</a>
+      }
+    </div>
+  </div>
+}
+
+templ FaqCard(question, answer string) {
+  <div class="rounded-2xl border bg-white p-5 shadow-sm">
+    <h4 class="text-base font-semibold">{ question }</h4>
+    <p class="mt-2 text-sm text-neutral-600">{ answer }</p>
+  </div>
+}

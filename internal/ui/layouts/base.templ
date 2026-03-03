@@ -1,0 +1,23 @@
+package layouts
+
+templ Base(title string) {
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>{ title }</title>
+      <meta name="description" content="CleanMyBox helps you clean your mailbox with one-shot payment flows."/>
+      <link rel="stylesheet" href="/assets/css/output.css"/>
+      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+      <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+      <style>
+        :root { color-scheme: light; }
+        body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+      </style>
+    </head>
+    <body class="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(255,240,220,0.9),rgba(248,244,238,0.95)_55%,rgba(244,240,233,0.9)_100%)] text-neutral-900">
+      { children... }
+    </body>
+  </html>
+}

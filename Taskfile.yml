@@ -1,0 +1,31 @@
+version: "3"
+
+vars:
+  TAILWIND_CMD:
+    sh: command -v tailwindcss >/dev/null 2>&1 && echo "tailwindcss" || echo "npx @tailwindcss/cli@latest"
+
+tasks:
+  templ:
+    desc: Watch and generate templ files with server proxy
+    cmds:
+      - go run github.com/a-h/templ/cmd/templ@latest generate --watch --proxy="http://localhost:8080" --cmd="go run ./cmd/server" --open-browser=false
+
+  tailwind:
+    desc: Watch and build Tailwind CSS
+    cmds:
+      - "{{.TAILWIND_CMD}} -i ./assets/css/input.css -o ./assets/css/output.css --watch"
+
+  dev:
+    desc: Start templ watcher and Tailwind watcher
+    cmds:
+      - task --parallel templ tailwind
+
+  build-templ:
+    desc: Generate templ files once
+    cmds:
+      - go run github.com/a-h/templ/cmd/templ@latest generate ./internal/ui/...
+
+  build-css:
+    desc: Build Tailwind CSS once
+    cmds:
+      - "{{.TAILWIND_CMD}} -i ./assets/css/input.css -o ./assets/css/output.css"
