@@ -8,8 +8,8 @@ import (
 
 templ Home(loggedIn bool, email string) {
   @layouts.Base(layouts.SEOProps{
-    Title:       "CleanMyBox - One-shot Gmail cleanup with safe unsubscribe",
-    Description: "Clean your Gmail in one run. Detect newsletters, unsubscribe safely, and track cleanup progress in real time with Clean and CleanPlus.",
+    Title:       "CleanMyBox - One-shot Gmail cleanup with AI actions",
+    Description: "Clean your Gmail in one run with Delete, Archive, and Move-to-Spam actions. Unsubscribe safely and track cleanup progress in real time.",
     Path:        "/",
     Robots:      "index, follow",
   }) {
@@ -25,7 +25,7 @@ templ Home(loggedIn bool, email string) {
             <span class="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">without breaking trust.</span>
           </h1>
           <p class="max-w-2xl text-lg text-muted-foreground">
-            CleanMyBox scans newsletters, filters low-value emails, and keeps your important messages safe with conservative rules.
+            CleanMyBox scans newsletters, applies conservative AI actions, and keeps important messages safe with a default keep-on-uncertainty policy.
           </p>
 
           <div class="flex flex-wrap items-center gap-3">
@@ -62,10 +62,10 @@ templ Home(loggedIn bool, email string) {
         <div class="mx-auto mt-16 grid max-w-6xl gap-8 md:grid-cols-2 lg:grid-cols-3">
           @FeatureCard("scan", "Header-based newsletter detection", "Use RFC signals like List-Unsubscribe and List-Id to find bulk email precisely.")
           @FeatureCard("shield", "Automatic unsubscribe flow", "Attempt unsubscribe links safely and keep an auditable success or failure trail.")
-          @FeatureCard("spark", "Cautious AI for CleanPlus", "Apply conservative AI decisions and default to keep whenever confidence is low.")
+          @FeatureCard("spark", "Action-based AI for CleanPlus", "Choose the safest action per email: delete, archive, move to spam, or keep when unsure.")
           @FeatureCard("lock", "Security-first by design", "Run with short-lived OAuth sessions and avoid long-term mailbox data retention.")
           @FeatureCard("server", "Go-native resilient backend", "Process jobs with idempotent webhook handling and robust worker execution.")
-          @FeatureCard("pulse", "Live job monitoring", "Track progress in real time with heartbeat checks and stalled-job detection.")
+          @FeatureCard("pulse", "Live action monitoring", "Track processing progress and action counters in real time with stalled-job detection.")
         </div>
       </section>
 
@@ -89,7 +89,7 @@ templ Home(loggedIn bool, email string) {
         </div>
         <div class="mx-auto mt-16 grid max-w-6xl gap-8 lg:grid-cols-2">
           @PlanCard("Clean", "7 EUR", "per cleanup", []string{"Header-based newsletter detection", "Mark as read and move to trash", "Automatic unsubscribe attempts", "Detailed cleanup report"}, loggedIn, "clean", false)
-          @PlanCard("CleanPlus", "11 EUR", "per cleanup", []string{"Everything in Clean", "Conservative AI delete decisions", "Spam and useless email filtering", "Live progress and resilient processing"}, loggedIn, "cleanplus", true)
+          @PlanCard("CleanPlus", "11 EUR", "per cleanup", []string{"Everything in Clean", "AI actions: delete, archive, move to spam", "Conservative keep-on-uncertainty policy", "Live progress and resilient processing"}, loggedIn, "cleanplus", true)
         </div>
       </section>
 
@@ -103,7 +103,7 @@ templ Home(loggedIn bool, email string) {
             <div class="">
             @FaqItem("Do you keep my mailbox data?", "No long-term retention. Cleanup jobs keep short-lived operational state only.")
             @FaqItem("How does Clean work?", "Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks as read, moves to trash, and attempts safe unsubscribe actions.")
-            @FaqItem("How does CleanPlus use AI?", "CleanPlus adds a conservative AI pass for spam and clearly useless emails. If the model is unsure, the message is kept.")
+            @FaqItem("How does CleanPlus use AI?", "CleanPlus returns an action for each analyzed email: delete, archive, move to spam, or keep. If the model is unsure, the email is kept.")
             @FaqItem("Is this a subscription?", "No. Pricing is one-shot per cleanup run. You only pay when you launch a run.")
             </div>
           </div>

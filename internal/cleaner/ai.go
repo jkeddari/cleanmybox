@@ -20,8 +20,9 @@ type aiInput struct {
 }
 
 type aiDecision struct {
-	Delete  bool   `json:"delete"`
+	Action  string `json:"action"`
 	Verdict string `json:"verdict"`
+	Reason  string `json:"reason"`
 }
 
 type openAIClient struct {
@@ -56,7 +57,7 @@ func (c *openAIClient) Classify(ctx context.Context, input aiInput) (aiDecision,
 		"messages": []map[string]string{
 			{
 				"role":    "system",
-				"content": "You are a conservative email safety classifier. Return only valid JSON with shape: {\"delete\": true|false, \"verdict\": \"spam\"|\"useless\"|\"legit\"|\"unsure\"}. Set delete=true only when very confident the email is spam or clearly useless. If uncertain, return delete=false and verdict=unsure.",
+				"content": "You are a conservative email triage agent. Return only valid JSON with shape: {\"action\":\"delete|archive|spam|keep\",\"verdict\":\"spam|useless|legit|unsure\",\"reason\":\"short reason\"}. Rules: spam/phishing/malicious -> action=spam verdict=spam; useless newsletters/promotional noise -> action=delete verdict=useless; useful but old and no longer actionable -> action=archive verdict=legit; uncertain or potentially important -> action=keep verdict=unsure. Never output text outside JSON.",
 			},
 			{
 				"role":    "user",
@@ -119,16 +120,27 @@ func (c *openAIClient) Classify(ctx context.Context, input aiInput) (aiDecision,
 		return aiDecision{}, err
 	}
 
+	decision.Action = strings.ToLower(strings.TrimSpace(decision.Action))
 	decision.Verdict = strings.ToLower(strings.TrimSpace(decision.Verdict))
+
+	switch decision.Action {
+	case "delete", "archive", "spam", "keep":
+	default:
+		decision.Action = "keep"
+	}
+
 	switch decision.Verdict {
 	case "spam", "useless", "legit", "unsure":
 	default:
-		decision.Verdict = "unsure"
-		decision.Delete = false
+		decision.Verdict = verdictFromAction(decision.Action)
 	}
 
-	if decision.Delete && !(decision.Verdict == "spam" || decision.Verdict == "useless") {
-		decision.Delete = false
+	if decision.Action == "spam" {
+		decision.Verdict = "spam"
+	} else if decision.Action == "delete" && decision.Verdict == "legit" {
+		decision.Verdict = "useless"
+	} else if decision.Action == "archive" && decision.Verdict == "spam" {
+		decision.Verdict = "legit"
 	}
 
 	return decision, nil
@@ -136,5 +148,18 @@ func (c *openAIClient) Classify(ctx context.Context, input aiInput) (aiDecision,
 
 func buildUserPrompt(input aiInput) string {
 	raw, _ := json.Marshal(input)
-	return "Classify this email:\n" + string(raw)
+	return "Decide the safest action for this email:\n" + string(raw)
+}
+
+func verdictFromAction(action string) string {
+	switch action {
+	case "spam":
+		return "spam"
+	case "delete":
+		return "useless"
+	case "archive":
+		return "legit"
+	default:
+		return "unsure"
+	}
 }

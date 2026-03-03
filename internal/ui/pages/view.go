@@ -2,13 +2,15 @@ package pages
 
 type JobStatsView struct {
 	Deleted            int
+	Kept               int
+	AIScanned          int
 	ScanFailed         int
 	Newsletters        int
 	Spam               int
 	Useless            int
 	Legit              int
 	Unsure             int
-	AIDeleted          int
+	Archived           int
 	Unsubscribed       int
 	TotalScanned       int
 	UnsubscribedFailed int

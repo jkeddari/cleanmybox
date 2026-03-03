@@ -256,6 +256,9 @@
   .z-\[9999\] {
     z-index: 9999;
   }
+  .mx-2 {
+    margin-inline: calc(var(--spacing) * 2);
+  }
   .mx-auto {
     margin-inline: auto;
   }

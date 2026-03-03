@@ -11,7 +11,7 @@ templ Base(props ...SEOProps) {
   {{
     seo := SEOProps{
       Title:       "CleanMyBox - One-shot Gmail cleanup",
-      Description: "CleanMyBox helps you clean Gmail safely with one-shot pricing. Detect newsletters, unsubscribe automatically, and track cleanup progress in real time.",
+      Description: "CleanMyBox helps you clean Gmail safely with one-shot pricing. Detect newsletters, unsubscribe automatically, and apply AI actions: delete, archive, or move to spam.",
       Path:        "/",
       Robots:      "index, follow",
     }
@@ -41,7 +41,7 @@ templ Base(props ...SEOProps) {
       <meta name="description" content={ seo.Description }/>
       <meta name="author" content="CleanMyBox"/>
       <meta name="robots" content={ seo.Robots }/>
-      <meta name="keywords" content="gmail cleanup, inbox cleaner, unsubscribe newsletters, mailbox cleanup, one-shot email cleaning, cleanplus ai"/>
+      <meta name="keywords" content="gmail cleanup, inbox cleaner, unsubscribe newsletters, mailbox cleanup, one-shot email cleaning, cleanplus ai, archive emails, move email to spam"/>
       <link rel="canonical" href={ canonicalURL }/>
 
       <meta property="og:title" content={ seo.Title }/>
@@ -67,7 +67,7 @@ templ Base(props ...SEOProps) {
           "@type": "WebSite",
           "name": "CleanMyBox",
           "url": "https://cleanmybox.io",
-          "description": "One-shot Gmail cleanup with newsletter detection, safe unsubscribe, and live progress tracking.",
+          "description": "One-shot Gmail cleanup with newsletter detection, safe unsubscribe, and AI actions: delete, archive, or move to spam.",
           "inLanguage": "en"
         }
       </script>
@@ -107,7 +107,7 @@ templ Base(props ...SEOProps) {
                 "name": "How does CleanPlus use AI?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "CleanPlus adds a conservative AI pass for spam and clearly useless emails. If the model is unsure, the message is kept."
+                  "text": "CleanPlus returns an action for each analyzed email: delete, archive, move to spam, or keep. If the model is unsure, the email is kept."
                 }
               },
               {

@@ -76,7 +76,6 @@ func main() {
 		OpenAIAPIKey:  openAIAPIKey,
 		OpenAIModel:   openAIModel,
 		OpenAIBaseURL: openAIBaseURL,
-		MaxAIAnalysis: 120,
 		DryRun:        cleanerDryRun,
 	})
 

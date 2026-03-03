@@ -51,7 +51,7 @@ func Home(loggedIn bool, email string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main class=\"mx-auto w-full max-w-6xl space-y-20 px-4 py-10 sm:px-6 lg:px-8\"><section class=\"grid gap-10 py-8 lg:grid-cols-2 lg:items-center\"><div class=\"space-y-6\"><span class=\"inline-flex rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground\">Built for inbox clarity</span><h1 class=\"text-5xl font-bold leading-tight tracking-tight sm:text-6xl\">Clean your mailbox<br><span class=\"bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent\">without breaking trust.</span></h1><p class=\"max-w-2xl text-lg text-muted-foreground\">CleanMyBox scans newsletters, filters low-value emails, and keeps your important messages safe with conservative rules.</p><div class=\"flex flex-wrap items-center gap-3\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main class=\"mx-auto w-full max-w-6xl space-y-20 px-4 py-10 sm:px-6 lg:px-8\"><section class=\"grid gap-10 py-8 lg:grid-cols-2 lg:items-center\"><div class=\"space-y-6\"><span class=\"inline-flex rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground\">Built for inbox clarity</span><h1 class=\"text-5xl font-bold leading-tight tracking-tight sm:text-6xl\">Clean your mailbox<br><span class=\"bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent\">without breaking trust.</span></h1><p class=\"max-w-2xl text-lg text-muted-foreground\">CleanMyBox scans newsletters, applies conservative AI actions, and keeps important messages safe with a default keep-on-uncertainty policy.</p><div class=\"flex flex-wrap items-center gap-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -78,7 +78,7 @@ func Home(loggedIn bool, email string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = FeatureCard("spark", "Cautious AI for CleanPlus", "Apply conservative AI decisions and default to keep whenever confidence is low.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = FeatureCard("spark", "Action-based AI for CleanPlus", "Choose the safest action per email: delete, archive, move to spam, or keep when unsure.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -90,7 +90,7 @@ func Home(loggedIn bool, email string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = FeatureCard("pulse", "Live job monitoring", "Track progress in real time with heartbeat checks and stalled-job detection.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = FeatureCard("pulse", "Live action monitoring", "Track processing progress and action counters in real time with stalled-job detection.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -126,7 +126,7 @@ func Home(loggedIn bool, email string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = PlanCard("CleanPlus", "11 EUR", "per cleanup", []string{"Everything in Clean", "Conservative AI delete decisions", "Spam and useless email filtering", "Live progress and resilient processing"}, loggedIn, "cleanplus", true).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = PlanCard("CleanPlus", "11 EUR", "per cleanup", []string{"Everything in Clean", "AI actions: delete, archive, move to spam", "Conservative keep-on-uncertainty policy", "Live progress and resilient processing"}, loggedIn, "cleanplus", true).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -142,7 +142,7 @@ func Home(loggedIn bool, email string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = FaqItem("How does CleanPlus use AI?", "CleanPlus adds a conservative AI pass for spam and clearly useless emails. If the model is unsure, the message is kept.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = FaqItem("How does CleanPlus use AI?", "CleanPlus returns an action for each analyzed email: delete, archive, move to spam, or keep. If the model is unsure, the email is kept.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -165,8 +165,8 @@ func Home(loggedIn bool, email string) templ.Component {
 			return nil
 		})
 		templ_7745c5c3_Err = layouts.Base(layouts.SEOProps{
-			Title:       "CleanMyBox - One-shot Gmail cleanup with safe unsubscribe",
-			Description: "Clean your Gmail in one run. Detect newsletters, unsubscribe safely, and track cleanup progress in real time with Clean and CleanPlus.",
+			Title:       "CleanMyBox - One-shot Gmail cleanup with AI actions",
+			Description: "Clean your Gmail in one run with Delete, Archive, and Move-to-Spam actions. Unsubscribe safely and track cleanup progress in real time.",
 			Path:        "/",
 			Robots:      "index, follow",
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
