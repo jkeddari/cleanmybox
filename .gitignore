@@ -1,0 +1,25 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# macOS
+.DS_Store
+
+# Go
+bin/
+dist/
+coverage.out
+*.test
+
+# Node / frontend
+ui/node_modules/
+ui/dist/
+ui/.vite/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
