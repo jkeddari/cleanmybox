@@ -13,7 +13,7 @@ import (
 	"github.com/jkeddari/cleanmybox/internal/ui/layouts"
 )
 
-func Cleanup(loggedIn bool, sessionID string, canceled bool) templ.Component {
+func Cleanup(loggedIn bool, email, sessionID string, canceled bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -46,11 +46,11 @@ func Cleanup(loggedIn bool, sessionID string, canceled bool) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = blocks.Navbar(loggedIn).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = blocks.Navbar(loggedIn, email).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <div class=\"mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8\"><main class=\"space-y-6\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <div class=\"flex min-h-[calc(100vh-73px)] flex-col\"><div class=\"mx-auto w-full max-w-5xl flex-1 px-4 py-10 sm:px-6 lg:px-8\"><main class=\"space-y-6\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -72,7 +72,7 @@ func Cleanup(loggedIn bool, sessionID string, canceled bool) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs("/ui/job-fragment?session_id=" + sessionID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/cleanup.templ`, Line: 31, Col: 66}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/cleanup.templ`, Line: 32, Col: 68}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -88,6 +88,10 @@ func Cleanup(loggedIn bool, sessionID string, canceled bool) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = blocks.Footer().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

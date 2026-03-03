@@ -39,7 +39,13 @@ templ jobStatusContent(view JobStatusView) {
           <p class="text-sm text-muted-foreground">Step: <span class="font-medium text-foreground">{ view.Step }</span></p>
         </div>
         <div class="flex items-center gap-2">
-          <span class="rounded-full border border-border px-3 py-1 text-xs">{ view.Plan }</span>
+          if view.Status == "error" {
+            <span class="rounded-full border border-destructive/40 bg-destructive/10 px-3 py-1 text-xs text-destructive">Failed</span>
+          } else if view.Status == "done" {
+            <span class="rounded-full border border-emerald-400/40 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-600 dark:text-emerald-400">Completed</span>
+          } else {
+            <span class="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs text-primary">In progress</span>
+          }
           if view.DryRun {
             <span class="rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs text-amber-700">Dry-run</span>
           }
@@ -60,13 +66,10 @@ templ jobStatusContent(view JobStatusView) {
         <div class="rounded-lg bg-muted p-3"><p class="text-xs text-muted-foreground">Newsletters</p><p class="text-xl font-semibold">{ view.Stats.Newsletters }</p></div>
         <div class="rounded-lg bg-muted p-3"><p class="text-xs text-muted-foreground">Spam</p><p class="text-xl font-semibold">{ view.Stats.Spam }</p></div>
         <div class="rounded-lg bg-muted p-3"><p class="text-xs text-muted-foreground">Useless</p><p class="text-xl font-semibold">{ view.Stats.Useless }</p></div>
-      </div>
-
-      <div class="mt-3 grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-        <p>AI deleted: <span class="font-semibold text-foreground">{ view.Stats.AIDeleted }</span></p>
-        <p>Total scanned: <span class="font-semibold text-foreground">{ view.Stats.TotalScanned }</span></p>
-        <p>Unsubscribed ok: <span class="font-semibold text-foreground">{ view.Stats.UnsubscribedOK }</span></p>
-        <p>Unsubscribed failed: <span class="font-semibold text-foreground">{ view.Stats.UnsubscribedFailed }</span></p>
+        <div class="rounded-lg bg-muted p-3"><p class="text-xs text-muted-foreground">Unsubscribe</p><p class="text-xl font-semibold">{ view.Stats.Unsubscribed }</p></div>
+        <div class="rounded-lg bg-muted p-3"><p class="text-xs text-muted-foreground">AI deleted</p><p class="text-xl font-semibold">{ view.Stats.AIDeleted }</p></div>
+        <div class="rounded-lg bg-muted p-3"><p class="text-xs text-muted-foreground">Scan failed</p><p class="text-xl font-semibold">{ view.Stats.ScanFailed }</p></div>
+        <div class="rounded-lg bg-muted p-3"><p class="text-xs text-muted-foreground">Scan time</p><p class="text-xl font-semibold">{ view.ScanDuration }</p></div>
       </div>
 
       <div class="mt-3 text-xs">

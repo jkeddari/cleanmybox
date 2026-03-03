@@ -6,14 +6,14 @@ import (
   "github.com/jkeddari/cleanmybox/internal/ui/layouts"
 )
 
-templ Home(loggedIn bool) {
+templ Home(loggedIn bool, email string) {
   @layouts.Base(layouts.SEOProps{
     Title:       "CleanMyBox - One-shot Gmail cleanup with safe unsubscribe",
     Description: "Clean your Gmail in one run. Detect newsletters, unsubscribe safely, and track cleanup progress in real time with Clean and CleanPlus.",
     Path:        "/",
     Robots:      "index, follow",
   }) {
-    @blocks.Navbar(loggedIn)
+    @blocks.Navbar(loggedIn, email)
 
     <main class="mx-auto w-full max-w-6xl space-y-20 px-4 py-10 sm:px-6 lg:px-8">
       <section class="grid gap-10 py-8 lg:grid-cols-2 lg:items-center">

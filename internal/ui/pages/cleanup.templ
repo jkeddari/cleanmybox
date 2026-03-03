@@ -5,39 +5,41 @@ import (
   "github.com/jkeddari/cleanmybox/internal/ui/layouts"
 )
 
-templ Cleanup(loggedIn bool, sessionID string, canceled bool) {
+templ Cleanup(loggedIn bool, email, sessionID string, canceled bool) {
   @layouts.Base(layouts.SEOProps{
     Title:       "Cleanup Status - CleanMyBox",
     Description: "Follow your CleanMyBox cleanup job progress in real time after checkout.",
     Path:        "/cleanup",
     Robots:      "noindex, nofollow",
   }) {
-    @blocks.Navbar(loggedIn)
+    @blocks.Navbar(loggedIn, email)
 
-    <div class="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-      <main class="space-y-6">
-        if canceled {
-          <div class="rounded-2xl border border-border bg-muted p-5">
-            <h2 class="text-lg font-semibold">Payment canceled</h2>
-            <p class="mt-1 text-sm text-muted-foreground">Your checkout was canceled. You can start again anytime.</p>
-          </div>
-        } else if sessionID == "" {
-          <div class="rounded-2xl border border-border bg-card p-5">
-            <h2 class="text-lg font-semibold">Waiting for payment session</h2>
-            <p class="mt-1 text-sm text-muted-foreground">Missing session_id in URL. Please retry from the pricing section.</p>
-          </div>
-        } else {
-          <div id="job-status"
-               hx-get={ "/ui/job-fragment?session_id=" + sessionID }
-               hx-trigger="load, every 2s"
-               hx-swap="outerHTML"
-               class="rounded-2xl border border-border bg-card p-6 shadow-sm">
-            <p class="text-sm text-muted-foreground">Loading cleanup status...</p>
-          </div>
-        }
-      </main>
+    <div class="flex min-h-[calc(100vh-73px)] flex-col">
+      <div class="mx-auto w-full max-w-5xl flex-1 px-4 py-10 sm:px-6 lg:px-8">
+        <main class="space-y-6">
+          if canceled {
+            <div class="rounded-2xl border border-border bg-muted p-5">
+              <h2 class="text-lg font-semibold">Payment canceled</h2>
+              <p class="mt-1 text-sm text-muted-foreground">Your checkout was canceled. You can start again anytime.</p>
+            </div>
+          } else if sessionID == "" {
+            <div class="rounded-2xl border border-border bg-card p-5">
+              <h2 class="text-lg font-semibold">Waiting for payment session</h2>
+              <p class="mt-1 text-sm text-muted-foreground">Missing session_id in URL. Please retry from the pricing section.</p>
+            </div>
+          } else {
+            <div id="job-status"
+                 hx-get={ "/ui/job-fragment?session_id=" + sessionID }
+                 hx-trigger="load, every 2s"
+                 hx-swap="outerHTML"
+                 class="rounded-2xl border border-border bg-card p-6 shadow-sm">
+              <p class="text-sm text-muted-foreground">Loading cleanup status...</p>
+            </div>
+          }
+        </main>
+      </div>
+
+      @blocks.Footer()
     </div>
-
-    @blocks.Footer()
   }
 }

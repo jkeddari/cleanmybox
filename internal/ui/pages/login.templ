@@ -5,14 +5,14 @@ import (
   "github.com/jkeddari/cleanmybox/internal/ui/layouts"
 )
 
-templ Login(loggedIn bool) {
+templ Login(loggedIn bool, email string) {
   @layouts.Base(layouts.SEOProps{
     Title:       "Login - CleanMyBox",
     Description: "Connect your Google mailbox to start a one-shot cleanup run with CleanMyBox.",
     Path:        "/login",
     Robots:      "noindex, nofollow",
   }) {
-    @blocks.Navbar(loggedIn)
+    @blocks.Navbar(loggedIn, email)
 
     <div class="mx-auto flex min-h-[calc(100vh-140px)] w-full max-w-6xl items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
       <div class="w-full max-w-lg rounded-3xl border border-border bg-card p-8 shadow-sm">

@@ -2,14 +2,15 @@ package pages
 
 type JobStatsView struct {
 	Deleted            int
+	ScanFailed         int
 	Newsletters        int
 	Spam               int
 	Useless            int
 	Legit              int
 	Unsure             int
 	AIDeleted          int
+	Unsubscribed       int
 	TotalScanned       int
-	UnsubscribedOK     int
 	UnsubscribedFailed int
 }
 
@@ -27,6 +28,7 @@ type JobStatusView struct {
 	HeartbeatAgeSec int
 	Stale           bool
 	StaleAfterSec   int
+	ScanDuration    string
 	Error           string
 	Stats           JobStatsView
 }

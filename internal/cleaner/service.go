@@ -37,6 +37,7 @@ const (
 
 type Stats struct {
 	TotalScanned       int `json:"total_scanned"`
+	ScanFailed         int `json:"scan_failed"`
 	Newsletters        int `json:"newsletters"`
 	Spam               int `json:"spam"`
 	Useless            int `json:"useless"`
@@ -44,7 +45,7 @@ type Stats struct {
 	Unsure             int `json:"unsure"`
 	AIDeleted          int `json:"ai_deleted"`
 	Deleted            int `json:"deleted"`
-	UnsubscribedOK     int `json:"unsubscribed_ok"`
+	Unsubscribed       int `json:"unsubscribed"`
 	UnsubscribedFailed int `json:"unsubscribed_failed"`
 }
 
@@ -187,6 +188,7 @@ func (s *Service) run(plan, checkoutSessionID, sessionRef string) {
 			Context(ctx).
 			Do()
 		if err != nil {
+			stats.ScanFailed++
 			s.updateJob(checkoutSessionID, func(j *Job) {
 				j.ProcessedCount++
 				j.CurrentEmail = ""
@@ -243,8 +245,9 @@ func (s *Service) run(plan, checkoutSessionID, sessionRef string) {
 			if s.dryRun {
 				log.Printf("dry-run unsubscribe skipped (session=%s, message=%s)", checkoutSessionID, msg.Id)
 			} else {
+				stats.Unsubscribed++
 				if ok, reason := tryHTTPUnsubscribe(ctx, unsubHeader); ok {
-					stats.UnsubscribedOK++
+					// counted when attempt starts
 				} else {
 					stats.UnsubscribedFailed++
 					log.Printf("unsubscribe failed (session=%s, message=%s, reason=%s)", checkoutSessionID, msg.Id, reason)

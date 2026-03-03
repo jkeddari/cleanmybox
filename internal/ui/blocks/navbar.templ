@@ -1,6 +1,8 @@
 package blocks
 
-templ Navbar(loggedIn bool) {
+import "github.com/jkeddari/cleanmybox/internal/ui/components/icon"
+
+templ Navbar(loggedIn bool, email string) {
   <nav class="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
     <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
       <div class="flex items-center gap-6">
@@ -18,6 +20,12 @@ templ Navbar(loggedIn bool) {
       <div class="flex items-center gap-2">
         if loggedIn {
           <button type="button" disabled class="rounded-lg border border-dashed border-border bg-muted px-4 py-2 text-sm font-medium text-muted-foreground">History (soon)</button>
+          <span class="hidden max-w-[220px] truncate px-2 text-sm text-muted-foreground sm:inline" title={ email }>{ email }</span>
+          <form method="POST" action="/auth/logout" class="inline-flex">
+            <button type="submit" aria-label="Logout" title="Logout" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-card-foreground hover:bg-muted">
+              @icon.Icon("log-out", "size-4")
+            </button>
+          </form>
         } else {
           <a href="/login" class="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90">Login</a>
         }

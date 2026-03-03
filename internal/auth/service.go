@@ -11,6 +11,8 @@ import (
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	"google.golang.org/api/gmail/v1"
+	"google.golang.org/api/option"
 )
 
 const sessionCookieName = "cbox_session"
@@ -26,6 +28,7 @@ type Config struct {
 
 type session struct {
 	ID        string
+	Email     string
 	Token     *oauth2.Token
 	ExpiresAt time.Time
 }
@@ -113,6 +116,7 @@ func (s *Service) HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "oauth exchange failed", http.StatusBadRequest)
 		return
 	}
+	email := s.fetchEmail(context.Background(), token)
 
 	sessionID, err := generateToken(32)
 	if err != nil {
@@ -123,6 +127,7 @@ func (s *Service) HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 	s.saveSession(session{
 		ID:        sessionID,
+		Email:     email,
 		Token:     token,
 		ExpiresAt: now.Add(s.sessionTTL),
 	})
@@ -158,6 +163,45 @@ func (s *Service) SessionIDFromRequest(r *http.Request) (string, bool) {
 		return "", false
 	}
 	return cookie.Value, true
+}
+
+func (s *Service) EmailFromRequest(r *http.Request) (string, bool) {
+	cookie, err := r.Cookie(sessionCookieName)
+	if err != nil || cookie == nil {
+		return "", false
+	}
+	sess, ok := s.getSession(cookie.Value)
+	if !ok {
+		return "", false
+	}
+	if strings.TrimSpace(sess.Email) == "" {
+		return "", false
+	}
+	return sess.Email, true
+}
+
+func (s *Service) HandleLogout(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if cookie, err := r.Cookie(sessionCookieName); err == nil && cookie != nil {
+		s.deleteSession(cookie.Value)
+	}
+
+	http.SetCookie(w, &http.Cookie{
+		Name:     sessionCookieName,
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+		Expires:  time.Unix(0, 0),
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+		Secure:   strings.HasPrefix(s.uiBaseURL, "https://"),
+	})
+
+	http.Redirect(w, r, s.uiBaseURL+"/", http.StatusFound)
 }
 
 func (s *Service) TokenBySessionID(sessionID string) (*oauth2.Token, bool) {
@@ -216,6 +260,12 @@ func (s *Service) saveSession(sess session) {
 	s.store.sessions[sess.ID] = sess
 }
 
+func (s *Service) deleteSession(id string) {
+	s.store.mu.Lock()
+	defer s.store.mu.Unlock()
+	delete(s.store.sessions, id)
+}
+
 func (s *Service) getSession(id string) (session, bool) {
 	s.store.mu.Lock()
 	defer s.store.mu.Unlock()
@@ -236,4 +286,19 @@ func generateToken(size int) (string, error) {
 		return "", err
 	}
 	return base64.RawURLEncoding.EncodeToString(b), nil
+}
+
+func (s *Service) fetchEmail(ctx context.Context, token *oauth2.Token) string {
+	if token == nil {
+		return ""
+	}
+	gmailSvc, err := gmail.NewService(ctx, option.WithTokenSource(oauth2.StaticTokenSource(token)))
+	if err != nil {
+		return ""
+	}
+	profile, err := gmailSvc.Users.GetProfile("me").Context(ctx).Do()
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(profile.EmailAddress)
 }

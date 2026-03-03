@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -21,17 +22,23 @@ func New(authSvc *auth.Service, cleanerSvc *cleaner.Service) *Handlers {
 }
 
 func (h *Handlers) HomePage(w http.ResponseWriter, r *http.Request) {
-	h.render(w, r, pages.Home(h.authSvc.IsLoggedIn(r)))
+	loggedIn := h.authSvc.IsLoggedIn(r)
+	email, _ := h.authSvc.EmailFromRequest(r)
+	h.render(w, r, pages.Home(loggedIn, email))
 }
 
 func (h *Handlers) LoginPage(w http.ResponseWriter, r *http.Request) {
-	h.render(w, r, pages.Login(h.authSvc.IsLoggedIn(r)))
+	loggedIn := h.authSvc.IsLoggedIn(r)
+	email, _ := h.authSvc.EmailFromRequest(r)
+	h.render(w, r, pages.Login(loggedIn, email))
 }
 
 func (h *Handlers) CleanupPage(w http.ResponseWriter, r *http.Request) {
 	sessionID := strings.TrimSpace(r.URL.Query().Get("session_id"))
 	canceled := r.URL.Query().Get("canceled") == "1"
-	h.render(w, r, pages.Cleanup(h.authSvc.IsLoggedIn(r), sessionID, canceled))
+	loggedIn := h.authSvc.IsLoggedIn(r)
+	email, _ := h.authSvc.EmailFromRequest(r)
+	h.render(w, r, pages.Cleanup(loggedIn, email, sessionID, canceled))
 }
 
 func (h *Handlers) JobFragment(w http.ResponseWriter, r *http.Request) {
@@ -65,17 +72,19 @@ func (h *Handlers) JobFragment(w http.ResponseWriter, r *http.Request) {
 		Error:           job.Error,
 		Stats: pages.JobStatsView{
 			Deleted:            job.Stats.Deleted,
+			ScanFailed:         job.Stats.ScanFailed,
 			Newsletters:        job.Stats.Newsletters,
 			Spam:               job.Stats.Spam,
 			Useless:            job.Stats.Useless,
 			Legit:              job.Stats.Legit,
 			Unsure:             job.Stats.Unsure,
 			AIDeleted:          job.Stats.AIDeleted,
+			Unsubscribed:       job.Stats.Unsubscribed,
 			TotalScanned:       job.Stats.TotalScanned,
-			UnsubscribedOK:     job.Stats.UnsubscribedOK,
 			UnsubscribedFailed: job.Stats.UnsubscribedFailed,
 		},
 	}
+	view.ScanDuration = formatDuration(job.StartedAt, job.FinishedAt)
 
 	if !job.LastHeartbeatAt.IsZero() {
 		view.HeartbeatAgeSec = int(time.Since(job.LastHeartbeatAt).Seconds())
@@ -104,4 +113,24 @@ func maxInt(a, b int) int {
 		return a
 	}
 	return b
+}
+
+func formatDuration(startedAt, finishedAt time.Time) string {
+	if startedAt.IsZero() {
+		return "0s"
+	}
+	end := finishedAt
+	if end.IsZero() {
+		end = time.Now()
+	}
+	if end.Before(startedAt) {
+		return "0s"
+	}
+	d := end.Sub(startedAt).Round(time.Second)
+	if d < time.Minute {
+		return d.String()
+	}
+	mins := int(d / time.Minute)
+	secs := int((d % time.Minute) / time.Second)
+	return fmt.Sprintf("%dm %02ds", mins, secs)
 }
