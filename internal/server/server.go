@@ -47,6 +47,9 @@ func (s *Server) routes() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.Handle("GET /assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(filepath.Clean("assets")))))
+	mux.HandleFunc("GET /favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, filepath.Clean("assets/img/favicon.ico"))
+	})
 	mux.HandleFunc("GET /robots.txt", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, filepath.Clean("assets/robots.txt"))
 	})
