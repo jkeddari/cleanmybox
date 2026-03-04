@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"github.com/jkeddari/cleanmybox/internal/cleaner"
+	"github.com/jkeddari/cleanmybox/internal/history"
 	"github.com/jkeddari/cleanmybox/internal/llm"
 	"github.com/jkeddari/cleanmybox/internal/server"
 	"github.com/jkeddari/cleanmybox/internal/server/auth"
@@ -38,6 +40,7 @@ func main() {
 	openAIBaseURL := envOr("OPENAI_BASE_URL", "https://api.openai.com")
 	pipelineWorkers := envInt("CLEANER_PIPELINE_WORKERS", 6)
 	aiRequestsPerSec := envInt("CLEANER_AI_REQUESTS_PER_SEC", 4)
+	databaseURL := mustEnv("DATABASE_URL")
 
 	server.LogConfig(
 		port,
@@ -76,17 +79,23 @@ func main() {
 		AllowVersionMismatch: stripeAllowVersionMismatch,
 	})
 
+	historyStore, err := history.NewPostgresStore(context.Background(), databaseURL)
+	if err != nil {
+		log.Fatalf("history store init error: %v", err)
+	}
+
 	cleanerService := cleaner.NewService(authService, cleaner.Config{
 		LLM:              llm.NewOpenAIClient(openAIAPIKey, openAIBaseURL, openAIModel),
 		DryRun:           cleanerDryRun,
 		PipelineWorkers:  pipelineWorkers,
 		AIRequestsPerSec: aiRequestsPerSec,
+		History:          historyStore,
 	})
 
 	httpServer := server.New(server.Config{
 		Port:      port,
 		UIBaseURL: uiBaseURL,
-	}, authService, stripeService, cleanerService)
+	}, authService, stripeService, cleanerService, historyStore)
 
 	if err := httpServer.Start(); err != nil {
 		log.Fatalf("server error: %v", err)

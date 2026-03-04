@@ -36,7 +36,7 @@ func Navbar(loggedIn bool, email string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if loggedIn {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button type=\"button\" disabled class=\"rounded-lg border border-dashed border-border bg-muted px-4 py-2 text-sm font-medium text-muted-foreground\">History (soon)</button> <span class=\"hidden max-w-[220px] truncate px-2 text-sm text-muted-foreground sm:inline\" title=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<a href=\"/history\" class=\"rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground hover:bg-muted\">History</a> <span class=\"hidden max-w-[220px] truncate px-2 text-sm text-muted-foreground sm:inline\" title=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

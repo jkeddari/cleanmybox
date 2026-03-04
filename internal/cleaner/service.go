@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/jkeddari/cleanmybox/internal/history"
 	"github.com/jkeddari/cleanmybox/internal/llm"
 	"github.com/jkeddari/cleanmybox/internal/provider"
 	"golang.org/x/oauth2"
@@ -21,6 +23,7 @@ type Config struct {
 	DryRun           bool
 	PipelineWorkers  int
 	AIRequestsPerSec int
+	History          history.Store
 }
 
 type Status string
@@ -64,6 +67,7 @@ type Job struct {
 	StartedAt         time.Time `json:"started_at"`
 	FinishedAt        time.Time `json:"finished_at,omitempty"`
 	Stats             Stats     `json:"stats"`
+	UserEmail         string    `json:"-"`
 }
 
 const (
@@ -72,9 +76,10 @@ const (
 )
 
 type Service struct {
-	tokens TokenProvider
-	engine *Engine
-	dryRun bool
+	tokens  TokenProvider
+	engine  *Engine
+	dryRun  bool
+	history history.Store
 
 	mu   sync.Mutex
 	jobs map[string]Job
@@ -89,12 +94,13 @@ func NewService(tokens TokenProvider, cfg Config) *Service {
 			PipelineWorkers:  cfg.PipelineWorkers,
 			AIRequestsPerSec: cfg.AIRequestsPerSec,
 		}),
-		dryRun: cfg.DryRun,
-		jobs:   make(map[string]Job),
+		dryRun:  cfg.DryRun,
+		history: cfg.History,
+		jobs:    make(map[string]Job),
 	}
 }
 
-func (s *Service) Launch(plan, checkoutSessionID, sessionRef string) {
+func (s *Service) Launch(plan, checkoutSessionID, sessionRef, userEmail string) {
 	job := Job{
 		CheckoutSessionID: checkoutSessionID,
 		Plan:              plan,
@@ -103,6 +109,7 @@ func (s *Service) Launch(plan, checkoutSessionID, sessionRef string) {
 		ProgressPercent:   1,
 		DryRun:            s.dryRun,
 		StaleAfterSeconds: int(jobStaleAfter.Seconds()),
+		UserEmail:         strings.TrimSpace(userEmail),
 	}
 	s.saveJob(job)
 
@@ -185,6 +192,7 @@ func (s *Service) run(plan, checkoutSessionID, sessionRef string) {
 		j.FinishedAt = time.Now()
 		j.Stats = stats
 	})
+	s.persistHistory(checkoutSessionID)
 
 	log.Printf("cleanup finished (plan=%s, session=%s, scanned=%d, newsletters=%d, deleted=%d)", plan, checkoutSessionID, stats.TotalScanned, stats.Newsletters, stats.Deleted)
 }
@@ -200,7 +208,77 @@ func (s *Service) failJob(checkoutSessionID, errMsg string) {
 		j.Error = errMsg
 		j.FinishedAt = time.Now()
 	})
+	s.persistHistory(checkoutSessionID)
 	log.Printf("cleanup failed (session=%s): %s", checkoutSessionID, errMsg)
+}
+
+func (s *Service) persistHistory(checkoutSessionID string) {
+	if s.history == nil {
+		return
+	}
+
+	job, ok := s.Job(checkoutSessionID)
+	if !ok {
+		return
+	}
+	if job.Status != StatusDone && job.Status != StatusError {
+		return
+	}
+
+	durationSeconds := 0
+	if !job.StartedAt.IsZero() {
+		end := job.FinishedAt
+		if end.IsZero() {
+			end = time.Now()
+		}
+		if end.After(job.StartedAt) {
+			durationSeconds = int(end.Sub(job.StartedAt).Seconds())
+		}
+	}
+
+	record := history.RunRecord{
+		CheckoutSessionID: job.CheckoutSessionID,
+		UserEmail:         firstNonEmpty(strings.TrimSpace(job.UserEmail), "unknown"),
+		Plan:              strings.ToLower(strings.TrimSpace(job.Plan)),
+		Status:            string(job.Status),
+		DryRun:            job.DryRun,
+		StartedAtUnix:     safeUnix(job.StartedAt),
+		FinishedAtUnix:    safeUnix(job.FinishedAt),
+		DurationSeconds:   durationSeconds,
+		TotalCount:        job.TotalCount,
+		ProcessedCount:    job.ProcessedCount,
+		ProgressPercent:   job.ProgressPercent,
+		Error:             strings.TrimSpace(job.Error),
+		Stats: history.Stats{
+			TotalScanned:       job.Stats.TotalScanned,
+			AIScanned:          job.Stats.AIScanned,
+			ScanFailed:         job.Stats.ScanFailed,
+			Newsletters:        job.Stats.Newsletters,
+			Spam:               job.Stats.Spam,
+			Useless:            job.Stats.Useless,
+			Legit:              job.Stats.Legit,
+			Unsure:             job.Stats.Unsure,
+			Archived:           job.Stats.Archived,
+			Kept:               job.Stats.Kept,
+			Deleted:            job.Stats.Deleted,
+			Unsubscribed:       job.Stats.Unsubscribed,
+			UnsubscribedFailed: job.Stats.UnsubscribedFailed,
+		},
+		CreatedAtUnix: time.Now().Unix(),
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := s.history.SaveRun(ctx, record); err != nil {
+		log.Printf("history save failed (session=%s): %v", checkoutSessionID, err)
+	}
+}
+
+func safeUnix(t time.Time) int64 {
+	if t.IsZero() {
+		return 0
+	}
+	return t.Unix()
 }
 
 func (s *Service) saveJob(job Job) {

@@ -31,3 +31,26 @@ type JobStatusView struct {
 	Error           string
 	Stats           JobStatsView
 }
+
+type HistoryRunView struct {
+	CreatedAt       string
+	Plan            string
+	Status          string
+	StatusLabel     string
+	Duration        string
+	DryRun          bool
+	Error           string
+	CheckoutSession string
+	Stats           JobStatsView
+}
+
+type HistoryView struct {
+	Email         string
+	Runs          []HistoryRunView
+	TotalRuns     int
+	SuccessRuns   int
+	FailedRuns    int
+	SuccessRate   int
+	DeletedTotal  int
+	ArchivedTotal int
+}

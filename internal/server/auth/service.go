@@ -180,6 +180,20 @@ func (s *Service) EmailFromRequest(r *http.Request) (string, bool) {
 	return sess.Email, true
 }
 
+func (s *Service) EmailBySessionID(sessionID string) (string, bool) {
+	if strings.TrimSpace(sessionID) == "" {
+		return "", false
+	}
+	sess, ok := s.getSession(sessionID)
+	if !ok {
+		return "", false
+	}
+	if strings.TrimSpace(sess.Email) == "" {
+		return "", false
+	}
+	return sess.Email, true
+}
+
 func (s *Service) HandleLogout(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)

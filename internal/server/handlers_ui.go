@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
+	"github.com/jkeddari/cleanmybox/internal/history"
 	"github.com/jkeddari/cleanmybox/internal/ui/pages"
 )
 
@@ -28,6 +29,32 @@ func (s *Server) CleanupPage(w http.ResponseWriter, r *http.Request) {
 	loggedIn := s.authSvc.IsLoggedIn(r)
 	email, _ := s.authSvc.EmailFromRequest(r)
 	s.render(w, r, pages.Cleanup(loggedIn, email, sessionID, canceled))
+}
+
+func (s *Server) HistoryPage(w http.ResponseWriter, r *http.Request) {
+	if !s.authSvc.IsLoggedIn(r) {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	email, ok := s.authSvc.EmailFromRequest(r)
+	if !ok || strings.TrimSpace(email) == "" {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	runs := make([]history.RunRecord, 0)
+	if s.history != nil {
+		historyRuns, err := s.history.ListRunsByEmail(r.Context(), email, 20)
+		if err != nil {
+			http.Error(w, "failed to load history", http.StatusInternalServerError)
+			return
+		}
+		runs = historyRuns
+	}
+
+	view := toHistoryView(email, runs)
+	s.render(w, r, pages.History(true, email, view))
 }
 
 func (s *Server) JobFragment(w http.ResponseWriter, r *http.Request) {
@@ -105,6 +132,104 @@ func formatDuration(startedAt, finishedAt time.Time) string {
 		return "0s"
 	}
 	d := end.Sub(startedAt).Round(time.Second)
+	if d < time.Minute {
+		return d.String()
+	}
+	mins := int(d / time.Minute)
+	secs := int((d % time.Minute) / time.Second)
+	return fmt.Sprintf("%dm %02ds", mins, secs)
+}
+
+func toHistoryView(email string, runs []history.RunRecord) pages.HistoryView {
+	viewRuns := make([]pages.HistoryRunView, 0, len(runs))
+	totalDeleted := 0
+	totalArchived := 0
+	successRuns := 0
+	failedRuns := 0
+
+	for _, run := range runs {
+		status := strings.ToLower(strings.TrimSpace(run.Status))
+		if status == "done" {
+			successRuns++
+		} else if status == "error" {
+			failedRuns++
+		}
+
+		totalDeleted += run.Stats.Deleted
+		totalArchived += run.Stats.Archived
+
+		createdAt := "-"
+		if run.CreatedAtUnix > 0 {
+			createdAt = time.Unix(run.CreatedAtUnix, 0).Local().Format("2006-01-02 15:04")
+		}
+
+		plan := strings.ToUpper(strings.TrimSpace(run.Plan))
+		if plan == "" {
+			plan = "CLEAN"
+		}
+
+		viewRuns = append(viewRuns, pages.HistoryRunView{
+			CreatedAt:       createdAt,
+			Plan:            plan,
+			Status:          status,
+			StatusLabel:     statusLabel(status),
+			Duration:        formatSeconds(run.DurationSeconds),
+			DryRun:          run.DryRun,
+			Error:           strings.TrimSpace(run.Error),
+			CheckoutSession: run.CheckoutSessionID,
+			Stats: pages.JobStatsView{
+				Deleted:            run.Stats.Deleted,
+				Kept:               run.Stats.Kept,
+				AIScanned:          run.Stats.AIScanned,
+				ScanFailed:         run.Stats.ScanFailed,
+				Newsletters:        run.Stats.Newsletters,
+				Spam:               run.Stats.Spam,
+				Useless:            run.Stats.Useless,
+				Legit:              run.Stats.Legit,
+				Unsure:             run.Stats.Unsure,
+				Archived:           run.Stats.Archived,
+				Unsubscribed:       run.Stats.Unsubscribed,
+				TotalScanned:       run.Stats.TotalScanned,
+				UnsubscribedFailed: run.Stats.UnsubscribedFailed,
+			},
+		})
+	}
+
+	successRate := 0
+	if len(runs) > 0 {
+		successRate = (successRuns * 100) / len(runs)
+	}
+
+	return pages.HistoryView{
+		Email:         email,
+		Runs:          viewRuns,
+		TotalRuns:     len(runs),
+		SuccessRuns:   successRuns,
+		FailedRuns:    failedRuns,
+		SuccessRate:   successRate,
+		DeletedTotal:  totalDeleted,
+		ArchivedTotal: totalArchived,
+	}
+}
+
+func statusLabel(status string) string {
+	if status == "done" {
+		return "Completed"
+	}
+	if status == "error" {
+		return "Failed"
+	}
+	if status == "running" {
+		return "Running"
+	}
+	return "Unknown"
+}
+
+func formatSeconds(seconds int) string {
+	if seconds <= 0 {
+		return "0s"
+	}
+	d := time.Duration(seconds) * time.Second
 	if d < time.Minute {
 		return d.String()
 	}

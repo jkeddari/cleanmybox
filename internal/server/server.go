@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/jkeddari/cleanmybox/internal/cleaner"
+	"github.com/jkeddari/cleanmybox/internal/history"
 	"github.com/jkeddari/cleanmybox/internal/server/auth"
 	"github.com/jkeddari/cleanmybox/internal/server/stripe"
 )
@@ -23,14 +24,16 @@ type Server struct {
 	authSvc   *auth.Service
 	stripeSvc *stripe.Service
 	cleaner   *cleaner.Service
+	history   history.Store
 }
 
-func New(cfg Config, authSvc *auth.Service, stripeSvc *stripe.Service, cleanerSvc *cleaner.Service) *Server {
+func New(cfg Config, authSvc *auth.Service, stripeSvc *stripe.Service, cleanerSvc *cleaner.Service, historyStore history.Store) *Server {
 	return &Server{
 		config:    cfg,
 		authSvc:   authSvc,
 		stripeSvc: stripeSvc,
 		cleaner:   cleanerSvc,
+		history:   historyStore,
 	}
 }
 
@@ -59,6 +62,7 @@ func (s *Server) routes() http.Handler {
 	mux.HandleFunc("GET /", s.HomePage)
 	mux.HandleFunc("GET /login", s.LoginPage)
 	mux.HandleFunc("GET /cleanup", s.CleanupPage)
+	mux.HandleFunc("GET /history", s.HistoryPage)
 	mux.HandleFunc("GET /ui/job-fragment", s.JobFragment)
 
 	mux.HandleFunc("GET /auth/google", s.authSvc.HandleGoogleAuth)
@@ -142,7 +146,8 @@ func (s *Server) routes() http.Handler {
 				w.WriteHeader(http.StatusOK)
 				return
 			}
-			s.cleaner.Launch(event.Plan, event.SessionID, event.SessionRef)
+			userEmail, _ := s.authSvc.EmailBySessionID(event.SessionRef)
+			s.cleaner.Launch(event.Plan, event.SessionID, event.SessionRef, userEmail)
 		case "checkout.session.async_payment_failed":
 			log.Printf("stripe async payment failed: session=%s plan=%s", event.SessionID, event.Plan)
 		case "checkout.session.expired":

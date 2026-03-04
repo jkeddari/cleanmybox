@@ -20,7 +20,7 @@ templ Navbar(loggedIn bool, email string) {
 
       <div class="flex items-center gap-2">
         if loggedIn {
-          <button type="button" disabled class="rounded-lg border border-dashed border-border bg-muted px-4 py-2 text-sm font-medium text-muted-foreground">History (soon)</button>
+          <a href="/history" class="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground hover:bg-muted">History</a>
           <span class="hidden max-w-[220px] truncate px-2 text-sm text-muted-foreground sm:inline" title={ email }>{ email }</span>
           <form method="POST" action="/auth/logout" class="inline-flex">
             <button type="submit" aria-label="Logout" title="Logout" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-card-foreground hover:bg-muted">
