@@ -1,4 +1,4 @@
-package cleaner
+package llm
 
 import (
 	"bytes"
@@ -12,27 +12,14 @@ import (
 	"time"
 )
 
-type aiInput struct {
-	Subject string            `json:"subject"`
-	From    string            `json:"from"`
-	Snippet string            `json:"snippet"`
-	Headers map[string]string `json:"headers"`
-}
-
-type aiDecision struct {
-	Action  string `json:"action"`
-	Verdict string `json:"verdict"`
-	Reason  string `json:"reason"`
-}
-
-type openAIClient struct {
+type OpenAIClient struct {
 	apiKey  string
 	baseURL string
 	model   string
 	client  *http.Client
 }
 
-func newOpenAIClient(apiKey, baseURL, model string) *openAIClient {
+func NewOpenAIClient(apiKey, baseURL, model string) *OpenAIClient {
 	if strings.TrimSpace(apiKey) == "" {
 		return nil
 	}
@@ -43,7 +30,7 @@ func newOpenAIClient(apiKey, baseURL, model string) *openAIClient {
 		model = "gpt-4o-mini"
 	}
 
-	return &openAIClient{
+	return &OpenAIClient{
 		apiKey:  apiKey,
 		baseURL: strings.TrimRight(baseURL, "/"),
 		model:   model,
@@ -51,7 +38,7 @@ func newOpenAIClient(apiKey, baseURL, model string) *openAIClient {
 	}
 }
 
-func (c *openAIClient) Classify(ctx context.Context, input aiInput) (aiDecision, error) {
+func (c *OpenAIClient) Classify(ctx context.Context, input Input) (Decision, error) {
 	reqBody := map[string]any{
 		"model": c.model,
 		"messages": []map[string]string{
@@ -69,29 +56,29 @@ func (c *openAIClient) Classify(ctx context.Context, input aiInput) (aiDecision,
 
 	body, err := json.Marshal(reqBody)
 	if err != nil {
-		return aiDecision{}, err
+		return Decision{}, err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.baseURL+"/v1/chat/completions", bytes.NewReader(body))
 	if err != nil {
-		return aiDecision{}, err
+		return Decision{}, err
 	}
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.client.Do(req)
 	if err != nil {
-		return aiDecision{}, err
+		return Decision{}, err
 	}
 	defer resp.Body.Close()
 
 	raw, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return aiDecision{}, err
+		return Decision{}, err
 	}
 
 	if resp.StatusCode >= 300 {
-		return aiDecision{}, fmt.Errorf("openai status %d: %s", resp.StatusCode, strings.TrimSpace(string(raw)))
+		return Decision{}, fmt.Errorf("openai status %d: %s", resp.StatusCode, strings.TrimSpace(string(raw)))
 	}
 
 	var parsed struct {
@@ -102,10 +89,10 @@ func (c *openAIClient) Classify(ctx context.Context, input aiInput) (aiDecision,
 		} `json:"choices"`
 	}
 	if err := json.Unmarshal(raw, &parsed); err != nil {
-		return aiDecision{}, err
+		return Decision{}, err
 	}
 	if len(parsed.Choices) == 0 {
-		return aiDecision{}, errors.New("openai returned no choices")
+		return Decision{}, errors.New("openai returned no choices")
 	}
 
 	content := strings.TrimSpace(parsed.Choices[0].Message.Content)
@@ -115,9 +102,9 @@ func (c *openAIClient) Classify(ctx context.Context, input aiInput) (aiDecision,
 		content = content[start : end+1]
 	}
 
-	var decision aiDecision
+	var decision Decision
 	if err := json.Unmarshal([]byte(content), &decision); err != nil {
-		return aiDecision{}, err
+		return Decision{}, err
 	}
 
 	decision.Action = strings.ToLower(strings.TrimSpace(decision.Action))
@@ -146,7 +133,7 @@ func (c *openAIClient) Classify(ctx context.Context, input aiInput) (aiDecision,
 	return decision, nil
 }
 
-func buildUserPrompt(input aiInput) string {
+func buildUserPrompt(input Input) string {
 	raw, _ := json.Marshal(input)
 	return "Decide the safest action for this email:\n" + string(raw)
 }

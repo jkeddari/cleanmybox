@@ -8,10 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/jkeddari/cleanmybox/internal/auth"
 	"github.com/jkeddari/cleanmybox/internal/cleaner"
-	"github.com/jkeddari/cleanmybox/internal/stripe"
-	"github.com/jkeddari/cleanmybox/internal/web"
+	"github.com/jkeddari/cleanmybox/internal/server/auth"
+	"github.com/jkeddari/cleanmybox/internal/server/stripe"
 )
 
 type Config struct {
@@ -46,7 +45,6 @@ func (s *Server) Start() error {
 
 func (s *Server) routes() http.Handler {
 	mux := http.NewServeMux()
-	ui := web.New(s.authSvc, s.cleaner)
 
 	mux.Handle("GET /assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir(filepath.Clean("assets")))))
 	mux.HandleFunc("GET /robots.txt", func(w http.ResponseWriter, r *http.Request) {
@@ -55,10 +53,10 @@ func (s *Server) routes() http.Handler {
 	mux.HandleFunc("GET /sitemap.xml", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, filepath.Clean("assets/sitemap.xml"))
 	})
-	mux.HandleFunc("GET /", ui.HomePage)
-	mux.HandleFunc("GET /login", ui.LoginPage)
-	mux.HandleFunc("GET /cleanup", ui.CleanupPage)
-	mux.HandleFunc("GET /ui/job-fragment", ui.JobFragment)
+	mux.HandleFunc("GET /", s.HomePage)
+	mux.HandleFunc("GET /login", s.LoginPage)
+	mux.HandleFunc("GET /cleanup", s.CleanupPage)
+	mux.HandleFunc("GET /ui/job-fragment", s.JobFragment)
 
 	mux.HandleFunc("GET /auth/google", s.authSvc.HandleGoogleAuth)
 	mux.HandleFunc("GET /auth/google/callback", s.authSvc.HandleGoogleCallback)

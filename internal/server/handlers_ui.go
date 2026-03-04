@@ -1,4 +1,4 @@
-package web
+package server
 
 import (
 	"fmt"
@@ -7,53 +7,42 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
-	"github.com/jkeddari/cleanmybox/internal/auth"
-	"github.com/jkeddari/cleanmybox/internal/cleaner"
 	"github.com/jkeddari/cleanmybox/internal/ui/pages"
 )
 
-type Handlers struct {
-	authSvc    *auth.Service
-	cleanerSvc *cleaner.Service
+func (s *Server) HomePage(w http.ResponseWriter, r *http.Request) {
+	loggedIn := s.authSvc.IsLoggedIn(r)
+	email, _ := s.authSvc.EmailFromRequest(r)
+	s.render(w, r, pages.Home(loggedIn, email))
 }
 
-func New(authSvc *auth.Service, cleanerSvc *cleaner.Service) *Handlers {
-	return &Handlers{authSvc: authSvc, cleanerSvc: cleanerSvc}
+func (s *Server) LoginPage(w http.ResponseWriter, r *http.Request) {
+	loggedIn := s.authSvc.IsLoggedIn(r)
+	email, _ := s.authSvc.EmailFromRequest(r)
+	s.render(w, r, pages.Login(loggedIn, email))
 }
 
-func (h *Handlers) HomePage(w http.ResponseWriter, r *http.Request) {
-	loggedIn := h.authSvc.IsLoggedIn(r)
-	email, _ := h.authSvc.EmailFromRequest(r)
-	h.render(w, r, pages.Home(loggedIn, email))
-}
-
-func (h *Handlers) LoginPage(w http.ResponseWriter, r *http.Request) {
-	loggedIn := h.authSvc.IsLoggedIn(r)
-	email, _ := h.authSvc.EmailFromRequest(r)
-	h.render(w, r, pages.Login(loggedIn, email))
-}
-
-func (h *Handlers) CleanupPage(w http.ResponseWriter, r *http.Request) {
+func (s *Server) CleanupPage(w http.ResponseWriter, r *http.Request) {
 	sessionID := strings.TrimSpace(r.URL.Query().Get("session_id"))
 	canceled := r.URL.Query().Get("canceled") == "1"
-	loggedIn := h.authSvc.IsLoggedIn(r)
-	email, _ := h.authSvc.EmailFromRequest(r)
-	h.render(w, r, pages.Cleanup(loggedIn, email, sessionID, canceled))
+	loggedIn := s.authSvc.IsLoggedIn(r)
+	email, _ := s.authSvc.EmailFromRequest(r)
+	s.render(w, r, pages.Cleanup(loggedIn, email, sessionID, canceled))
 }
 
-func (h *Handlers) JobFragment(w http.ResponseWriter, r *http.Request) {
+func (s *Server) JobFragment(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("Vary", "HX-Request")
 
 	sessionID := strings.TrimSpace(r.URL.Query().Get("session_id"))
 	if sessionID == "" {
-		h.render(w, r, pages.JobStatus(pages.JobStatusView{SessionID: "", Found: false}))
+		s.render(w, r, pages.JobStatus(pages.JobStatusView{SessionID: "", Found: false}))
 		return
 	}
 
-	job, found := h.cleanerSvc.Job(sessionID)
+	job, found := s.cleaner.Job(sessionID)
 	if !found {
-		h.render(w, r, pages.JobStatus(pages.JobStatusView{SessionID: sessionID, Found: false}))
+		s.render(w, r, pages.JobStatus(pages.JobStatusView{SessionID: sessionID, Found: false}))
 		return
 	}
 
@@ -87,10 +76,10 @@ func (h *Handlers) JobFragment(w http.ResponseWriter, r *http.Request) {
 	}
 	view.ScanDuration = formatDuration(job.StartedAt, job.FinishedAt)
 
-	h.render(w, r, pages.JobStatus(view))
+	s.render(w, r, pages.JobStatus(view))
 }
 
-func (h *Handlers) render(w http.ResponseWriter, r *http.Request, component templ.Component) {
+func (s *Server) render(w http.ResponseWriter, r *http.Request, component templ.Component) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	_ = component.Render(r.Context(), w)
 }

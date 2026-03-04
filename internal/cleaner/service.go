@@ -4,14 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"net/http"
-	"strings"
 	"sync"
 	"time"
 
+	"github.com/jkeddari/cleanmybox/internal/llm"
+	"github.com/jkeddari/cleanmybox/internal/provider"
 	"golang.org/x/oauth2"
-	"google.golang.org/api/gmail/v1"
-	"google.golang.org/api/option"
 )
 
 type TokenProvider interface {
@@ -19,10 +17,10 @@ type TokenProvider interface {
 }
 
 type Config struct {
-	OpenAIAPIKey  string
-	OpenAIModel   string
-	OpenAIBaseURL string
-	DryRun        bool
+	LLM              llm.Client
+	DryRun           bool
+	PipelineWorkers  int
+	AIRequestsPerSec int
 }
 
 type Status string
@@ -68,24 +66,14 @@ type Job struct {
 	Stats             Stats     `json:"stats"`
 }
 
-type pipelineResult struct {
-	currentEmail string
-	stats        Stats
-}
-
 const (
-	jobStaleAfter           = 6 * time.Minute
-	jobStallCheckEvery      = 15 * time.Second
-	defaultPipelineWorkers  = 6
-	defaultAIRequestsPerSec = 4
-	defaultAIMaxRetries     = 5
-	defaultAIInitialBackoff = 500 * time.Millisecond
-	defaultAIMaxBackoff     = 8 * time.Second
+	jobStaleAfter      = 6 * time.Minute
+	jobStallCheckEvery = 15 * time.Second
 )
 
 type Service struct {
 	tokens TokenProvider
-	ai     *openAIClient
+	engine *Engine
 	dryRun bool
 
 	mu   sync.Mutex
@@ -93,14 +81,14 @@ type Service struct {
 }
 
 func NewService(tokens TokenProvider, cfg Config) *Service {
-	model := strings.TrimSpace(cfg.OpenAIModel)
-	if model == "" {
-		model = "gpt-4o-mini"
-	}
-
 	return &Service{
 		tokens: tokens,
-		ai:     newOpenAIClient(cfg.OpenAIAPIKey, cfg.OpenAIBaseURL, model),
+		engine: NewEngine(EngineConfig{
+			LLM:              cfg.LLM,
+			DryRun:           cfg.DryRun,
+			PipelineWorkers:  cfg.PipelineWorkers,
+			AIRequestsPerSec: cfg.AIRequestsPerSec,
+		}),
 		dryRun: cfg.DryRun,
 		jobs:   make(map[string]Job),
 	}
@@ -147,106 +135,43 @@ func (s *Service) run(plan, checkoutSessionID, sessionRef string) {
 	go s.watchStall(ctx, cancel, checkoutSessionID)
 	defer cancel()
 
-	gmailSvc, err := gmail.NewService(ctx, option.WithTokenSource(oauth2.StaticTokenSource(token)))
+	mailbox, err := provider.NewGmailProvider(ctx, token)
 	if err != nil {
 		s.failJob(checkoutSessionID, fmt.Sprintf("gmail init failed: %v", err))
 		return
 	}
 
-	s.updateJob(checkoutSessionID, func(j *Job) {
-		j.Step = "scanning_emails"
-		j.ProgressPercent = 5
-	})
-
-	messageIDs, err := listInboxMessageIDs(ctx, gmailSvc)
-	if err != nil {
-		s.failJob(checkoutSessionID, fmt.Sprintf("gmail list failed: %v", err))
-		return
-	}
-
-	log.Printf("cleanup inbox size fetched (session=%s, total_inbox=%d, dry_run=%t)", checkoutSessionID, len(messageIDs), s.dryRun)
-	log.Printf("cleanup scan started (session=%s, plan=%s, dry_run=%t)", checkoutSessionID, plan, s.dryRun)
-
-	stats := Stats{}
-	cleanPlus := strings.EqualFold(plan, "cleanplus")
-	var scanner *aiScan
-	if cleanPlus {
-		if s.ai == nil {
-			s.failJob(checkoutSessionID, "cleanplus requested but OPENAI_API_KEY is missing")
-			return
-		}
-		scanner = newAIScan(s, defaultAIRequestsPerSec)
-		defer scanner.Close()
-	}
-
-	s.updateJob(checkoutSessionID, func(j *Job) {
-		j.TotalCount = len(messageIDs)
-		j.ProcessedCount = 0
-		j.Step = "processing_emails"
-		j.ProgressPercent = percentFromCounts(0, len(messageIDs))
-	})
-
-	if len(messageIDs) > 0 {
-		workerCount := defaultPipelineWorkers
-		if workerCount > len(messageIDs) {
-			workerCount = len(messageIDs)
-		}
-		if workerCount < 1 {
-			workerCount = 1
-		}
-
-		jobsCh := make(chan string)
-		resultsCh := make(chan pipelineResult, workerCount)
-
-		var wg sync.WaitGroup
-		for i := 0; i < workerCount; i++ {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
-				for messageID := range jobsCh {
-					result := s.processMessage(ctx, gmailSvc, checkoutSessionID, messageID, cleanPlus, scanner)
-					select {
-					case <-ctx.Done():
-						return
-					case resultsCh <- result:
-					}
-				}
-			}()
-		}
-
-		go func() {
-			defer close(jobsCh)
-			for _, messageID := range messageIDs {
-				select {
-				case <-ctx.Done():
-					return
-				case jobsCh <- messageID:
-				}
-			}
-		}()
-
-		go func() {
-			wg.Wait()
-			close(resultsCh)
-		}()
-
-		processed := 0
-		for result := range resultsCh {
-			processed++
-			mergeStats(&stats, result.stats)
-
-			if processed%25 == 0 {
-				log.Printf("cleanup progress (session=%s, processed=%d/%d)", checkoutSessionID, processed, len(messageIDs))
-			}
-
+	stats, err := s.engine.Run(ctx, RunOptions{
+		Plan:              plan,
+		CheckoutSessionID: checkoutSessionID,
+		Mailbox:           mailbox,
+		OnStep: func(step string) {
 			s.updateJob(checkoutSessionID, func(j *Job) {
-				j.ProcessedCount = processed
-				j.CurrentEmail = firstNonEmpty(result.currentEmail, "")
-				j.Stats = stats
-				j.ProgressPercent = percentFromCounts(j.ProcessedCount, j.TotalCount)
-				j.Step = "processing_emails"
+				j.Step = step
 			})
-		}
+		},
+		OnInit: func(total int) {
+			s.updateJob(checkoutSessionID, func(j *Job) {
+				j.Step = "processing_emails"
+				j.TotalCount = total
+				j.ProcessedCount = 0
+				j.ProgressPercent = percentFromCounts(0, total)
+			})
+		},
+		OnProgress: func(processed, total int, currentEmail string, snapshot Stats) {
+			s.updateJob(checkoutSessionID, func(j *Job) {
+				j.Step = "processing_emails"
+				j.TotalCount = total
+				j.ProcessedCount = processed
+				j.CurrentEmail = currentEmail
+				j.Stats = snapshot
+				j.ProgressPercent = percentFromCounts(processed, total)
+			})
+		},
+	})
+	if err != nil {
+		s.failJob(checkoutSessionID, err.Error())
+		return
 	}
 
 	s.updateJob(checkoutSessionID, func(j *Job) {
@@ -262,148 +187,6 @@ func (s *Service) run(plan, checkoutSessionID, sessionRef string) {
 	})
 
 	log.Printf("cleanup finished (plan=%s, session=%s, scanned=%d, newsletters=%d, deleted=%d)", plan, checkoutSessionID, stats.TotalScanned, stats.Newsletters, stats.Deleted)
-}
-
-type aiScan struct {
-	tokens <-chan struct{}
-	stop   func()
-	svc    *Service
-}
-
-func newAIScan(svc *Service, requestsPerSec int) *aiScan {
-	tokens, stop := newAIRateLimiter(requestsPerSec)
-	return &aiScan{
-		tokens: tokens,
-		stop:   stop,
-		svc:    svc,
-	}
-}
-
-func (a *aiScan) Close() {
-	if a == nil || a.stop == nil {
-		return
-	}
-	a.stop()
-	a.stop = nil
-}
-
-func (a *aiScan) Classify(ctx context.Context, input aiInput) (aiDecision, error) {
-	if err := waitForAIRateToken(ctx, a.tokens); err != nil {
-		return aiDecision{}, err
-	}
-	return a.svc.classifyWithRetry(ctx, input)
-}
-
-func (s *Service) processMessage(ctx context.Context, gmailSvc *gmail.Service, checkoutSessionID, messageID string, cleanPlus bool, scanner *aiScan) pipelineResult {
-	result := pipelineResult{}
-	result.stats.TotalScanned = 1
-
-	msg, err := gmailSvc.Users.Messages.Get("me", messageID).
-		Format("metadata").
-		MetadataHeaders("List-Unsubscribe", "List-Id", "Precedence", "Auto-Submitted", "From", "Subject").
-		Context(ctx).
-		Do()
-	if err != nil {
-		result.stats.ScanFailed = 1
-		return result
-	}
-
-	var partHeaders []*gmail.MessagePartHeader
-	if msg.Payload != nil {
-		partHeaders = msg.Payload.Headers
-	}
-
-	result.currentEmail = firstNonEmpty(strings.TrimSpace(headersValue(partHeaders, "Subject")), strings.TrimSpace(headersValue(partHeaders, "From")), "(no subject)")
-
-	headers := toHeaderMap(partHeaders)
-	if isNewsletter(headers) {
-		result.stats.Newsletters = 1
-
-		if s.dryRun {
-			result.stats.Deleted = 1
-		} else {
-			if _, err := gmailSvc.Users.Messages.Modify("me", msg.Id, &gmail.ModifyMessageRequest{RemoveLabelIds: []string{"UNREAD"}}).Context(ctx).Do(); err != nil {
-				log.Printf("gmail modify failed (session=%s, message=%s): %v", checkoutSessionID, msg.Id, err)
-			}
-			if _, err := gmailSvc.Users.Messages.Trash("me", msg.Id).Context(ctx).Do(); err == nil {
-				result.stats.Deleted = 1
-			} else {
-				log.Printf("gmail trash failed (session=%s, message=%s): %v", checkoutSessionID, msg.Id, err)
-			}
-		}
-
-		if unsubHeader := headers["list-unsubscribe"]; unsubHeader != "" {
-			if s.dryRun {
-				log.Printf("dry-run unsubscribe skipped (session=%s, message=%s)", checkoutSessionID, msg.Id)
-			} else {
-				result.stats.Unsubscribed = 1
-				if ok, reason := tryHTTPUnsubscribe(ctx, unsubHeader); !ok {
-					result.stats.UnsubscribedFailed = 1
-					log.Printf("unsubscribe failed (session=%s, message=%s, reason=%s)", checkoutSessionID, msg.Id, reason)
-				}
-			}
-		}
-
-		return result
-	}
-
-	if !cleanPlus {
-		return result
-	}
-
-	result.stats.AIScanned = 1
-	decision, err := scanner.Classify(ctx, aiInput{
-		Subject: headers["subject"],
-		From:    headers["from"],
-		Snippet: msg.Snippet,
-		Headers: map[string]string{
-			"list-unsubscribe": headers["list-unsubscribe"],
-			"list-id":          headers["list-id"],
-			"precedence":       headers["precedence"],
-			"auto-submitted":   headers["auto-submitted"],
-		},
-	})
-	if err != nil {
-		result.stats.Unsure = 1
-		result.stats.Kept = 1
-		return result
-	}
-
-	switch decision.Verdict {
-	case "useless":
-		result.stats.Useless = 1
-	case "legit":
-		result.stats.Legit = 1
-	case "spam":
-		// Spam action count is tracked when action is applied.
-	default:
-		result.stats.Unsure = 1
-	}
-
-	actionStats := Stats{}
-	applyAIDecisionAction(ctx, gmailSvc, checkoutSessionID, msg.Id, decision.Action, s.dryRun, &actionStats)
-	result.stats.Deleted += actionStats.Deleted
-	result.stats.Archived += actionStats.Archived
-	result.stats.Spam += actionStats.Spam
-	result.stats.Kept += actionStats.Kept
-
-	return result
-}
-
-func mergeStats(target *Stats, delta Stats) {
-	target.TotalScanned += delta.TotalScanned
-	target.AIScanned += delta.AIScanned
-	target.ScanFailed += delta.ScanFailed
-	target.Newsletters += delta.Newsletters
-	target.Spam += delta.Spam
-	target.Useless += delta.Useless
-	target.Legit += delta.Legit
-	target.Unsure += delta.Unsure
-	target.Archived += delta.Archived
-	target.Kept += delta.Kept
-	target.Deleted += delta.Deleted
-	target.Unsubscribed += delta.Unsubscribed
-	target.UnsubscribedFailed += delta.UnsubscribedFailed
 }
 
 func (s *Service) failJob(checkoutSessionID, errMsg string) {
@@ -467,236 +250,6 @@ func (s *Service) watchStall(ctx context.Context, cancel context.CancelFunc, che
 			}
 		}
 	}
-}
-
-func listInboxMessageIDs(ctx context.Context, svc *gmail.Service) ([]string, error) {
-	ids := make([]string, 0)
-	nextPageToken := ""
-
-	for {
-		req := svc.Users.Messages.List("me").Q("in:inbox").MaxResults(100).Context(ctx)
-		if nextPageToken != "" {
-			req = req.PageToken(nextPageToken)
-		}
-		res, err := req.Do()
-		if err != nil {
-			return nil, err
-		}
-		for _, m := range res.Messages {
-			ids = append(ids, m.Id)
-		}
-		if res.NextPageToken == "" {
-			break
-		}
-		nextPageToken = res.NextPageToken
-	}
-
-	return ids, nil
-}
-
-func toHeaderMap(headers []*gmail.MessagePartHeader) map[string]string {
-	m := make(map[string]string, len(headers))
-	for _, h := range headers {
-		m[strings.ToLower(strings.TrimSpace(h.Name))] = strings.TrimSpace(h.Value)
-	}
-	return m
-}
-
-func headersValue(headers []*gmail.MessagePartHeader, key string) string {
-	for _, h := range headers {
-		if strings.EqualFold(strings.TrimSpace(h.Name), key) {
-			return h.Value
-		}
-	}
-	return ""
-}
-
-func firstNonEmpty(values ...string) string {
-	for _, v := range values {
-		if strings.TrimSpace(v) != "" {
-			return v
-		}
-	}
-	return ""
-}
-
-func isNewsletter(headers map[string]string) bool {
-	if headers["list-unsubscribe"] != "" {
-		return true
-	}
-	if headers["list-id"] != "" {
-		return true
-	}
-	if precedence := strings.ToLower(headers["precedence"]); precedence == "bulk" || precedence == "list" {
-		return true
-	}
-	if auto := strings.ToLower(headers["auto-submitted"]); auto != "" && auto != "no" {
-		return true
-	}
-	return false
-}
-
-func tryHTTPUnsubscribe(ctx context.Context, raw string) (bool, string) {
-	seenHTTP := false
-	for _, token := range strings.Split(raw, ",") {
-		candidate := strings.TrimSpace(strings.Trim(token, "<>"))
-		if strings.HasPrefix(candidate, "http://") || strings.HasPrefix(candidate, "https://") {
-			seenHTTP = true
-			req, err := http.NewRequestWithContext(ctx, http.MethodGet, candidate, nil)
-			if err != nil {
-				log.Printf("unsubscribe request build error (url=%s): %v", candidate, err)
-				continue
-			}
-			resp, err := (&http.Client{Timeout: 7 * time.Second}).Do(req)
-			if err != nil {
-				log.Printf("unsubscribe request error (url=%s): %v", candidate, err)
-				continue
-			}
-			if resp == nil {
-				continue
-			}
-			_ = resp.Body.Close()
-			if resp.StatusCode >= 200 && resp.StatusCode < 400 {
-				return true, "ok"
-			}
-			log.Printf("unsubscribe non-success status (url=%s, status=%d)", candidate, resp.StatusCode)
-		}
-	}
-	if !seenHTTP {
-		return false, "no_http_unsubscribe_link"
-	}
-	return false, "all_http_unsubscribe_attempts_failed"
-}
-
-func applyAIDecisionAction(ctx context.Context, gmailSvc *gmail.Service, checkoutSessionID, messageID, action string, dryRun bool, stats *Stats) {
-	switch action {
-	case "delete":
-		if dryRun {
-			stats.Deleted++
-			return
-		}
-		if _, err := gmailSvc.Users.Messages.Modify("me", messageID, &gmail.ModifyMessageRequest{RemoveLabelIds: []string{"UNREAD"}}).Context(ctx).Do(); err != nil {
-			log.Printf("gmail modify failed (session=%s, message=%s): %v", checkoutSessionID, messageID, err)
-		}
-		if _, err := gmailSvc.Users.Messages.Trash("me", messageID).Context(ctx).Do(); err != nil {
-			log.Printf("gmail trash failed (session=%s, message=%s): %v", checkoutSessionID, messageID, err)
-			return
-		}
-		stats.Deleted++
-	case "archive":
-		if dryRun {
-			stats.Archived++
-			return
-		}
-		if _, err := gmailSvc.Users.Messages.Modify("me", messageID, &gmail.ModifyMessageRequest{RemoveLabelIds: []string{"UNREAD", "INBOX"}}).Context(ctx).Do(); err != nil {
-			log.Printf("gmail archive failed (session=%s, message=%s): %v", checkoutSessionID, messageID, err)
-			return
-		}
-		stats.Archived++
-	case "spam":
-		if dryRun {
-			stats.Spam++
-			return
-		}
-		if _, err := gmailSvc.Users.Messages.Modify("me", messageID, &gmail.ModifyMessageRequest{AddLabelIds: []string{"SPAM"}, RemoveLabelIds: []string{"UNREAD", "INBOX"}}).Context(ctx).Do(); err != nil {
-			log.Printf("gmail spam move failed (session=%s, message=%s): %v", checkoutSessionID, messageID, err)
-			return
-		}
-		stats.Spam++
-	case "keep":
-		stats.Kept++
-	default:
-		return
-	}
-}
-
-func newAIRateLimiter(requestsPerSec int) (<-chan struct{}, func()) {
-	if requestsPerSec <= 0 {
-		requestsPerSec = 1
-	}
-	interval := time.Second / time.Duration(requestsPerSec)
-	if interval <= 0 {
-		interval = time.Millisecond
-	}
-
-	tokens := make(chan struct{}, requestsPerSec)
-	for i := 0; i < requestsPerSec; i++ {
-		tokens <- struct{}{}
-	}
-
-	stop := make(chan struct{})
-	ticker := time.NewTicker(interval)
-	go func() {
-		defer ticker.Stop()
-		for {
-			select {
-			case <-stop:
-				return
-			case <-ticker.C:
-				select {
-				case tokens <- struct{}{}:
-				default:
-				}
-			}
-		}
-	}()
-
-	return tokens, func() { close(stop) }
-}
-
-func waitForAIRateToken(ctx context.Context, tokens <-chan struct{}) error {
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case <-tokens:
-		return nil
-	}
-}
-
-func (s *Service) classifyWithRetry(ctx context.Context, input aiInput) (aiDecision, error) {
-	delay := defaultAIInitialBackoff
-	var lastErr error
-
-	for attempt := 1; attempt <= defaultAIMaxRetries; attempt++ {
-		decision, err := s.ai.Classify(ctx, input)
-		if err == nil {
-			return decision, nil
-		}
-		lastErr = err
-		if !isRetryableAIError(err) || attempt == defaultAIMaxRetries {
-			break
-		}
-
-		jitter := time.Duration(time.Now().UnixNano() % int64(delay/2+1))
-		wait := delay + jitter
-		select {
-		case <-ctx.Done():
-			return aiDecision{}, ctx.Err()
-		case <-time.After(wait):
-		}
-
-		delay *= 2
-		if delay > defaultAIMaxBackoff {
-			delay = defaultAIMaxBackoff
-		}
-	}
-
-	return aiDecision{}, lastErr
-}
-
-func isRetryableAIError(err error) bool {
-	if err == nil {
-		return false
-	}
-	msg := strings.ToLower(err.Error())
-	return strings.Contains(msg, "status 429") ||
-		strings.Contains(msg, "status 408") ||
-		strings.Contains(msg, "status 500") ||
-		strings.Contains(msg, "status 502") ||
-		strings.Contains(msg, "status 503") ||
-		strings.Contains(msg, "status 504") ||
-		strings.Contains(msg, "timeout") ||
-		strings.Contains(msg, "temporarily unavailable")
 }
 
 func percentFromCounts(processed, total int) int {

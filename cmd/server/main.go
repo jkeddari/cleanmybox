@@ -1,15 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/jkeddari/cleanmybox/internal/auth"
 	"github.com/jkeddari/cleanmybox/internal/cleaner"
+	"github.com/jkeddari/cleanmybox/internal/llm"
 	"github.com/jkeddari/cleanmybox/internal/server"
-	"github.com/jkeddari/cleanmybox/internal/stripe"
+	"github.com/jkeddari/cleanmybox/internal/server/auth"
+	"github.com/jkeddari/cleanmybox/internal/server/stripe"
 	"github.com/joho/godotenv"
 )
 
@@ -34,6 +36,8 @@ func main() {
 	openAIAPIKey := envOr("OPENAI_API_KEY", "")
 	openAIModel := envOr("OPENAI_MODEL", "gpt-4o-mini")
 	openAIBaseURL := envOr("OPENAI_BASE_URL", "https://api.openai.com")
+	pipelineWorkers := envInt("CLEANER_PIPELINE_WORKERS", 6)
+	aiRequestsPerSec := envInt("CLEANER_AI_REQUESTS_PER_SEC", 4)
 
 	server.LogConfig(
 		port,
@@ -73,10 +77,10 @@ func main() {
 	})
 
 	cleanerService := cleaner.NewService(authService, cleaner.Config{
-		OpenAIAPIKey:  openAIAPIKey,
-		OpenAIModel:   openAIModel,
-		OpenAIBaseURL: openAIBaseURL,
-		DryRun:        cleanerDryRun,
+		LLM:              llm.NewOpenAIClient(openAIAPIKey, openAIBaseURL, openAIModel),
+		DryRun:           cleanerDryRun,
+		PipelineWorkers:  pipelineWorkers,
+		AIRequestsPerSec: aiRequestsPerSec,
 	})
 
 	httpServer := server.New(server.Config{
@@ -111,4 +115,17 @@ func envBool(key string, fallback bool) bool {
 		return fallback
 	}
 	return value == "1" || value == "true" || value == "yes" || value == "on"
+}
+
+func envInt(key string, fallback int) int {
+	value := strings.TrimSpace(os.Getenv(key))
+	if value == "" {
+		return fallback
+	}
+	n := fallback
+	_, _ = fmt.Sscanf(value, "%d", &n)
+	if n <= 0 {
+		return fallback
+	}
+	return n
 }
