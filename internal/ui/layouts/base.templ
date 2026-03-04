@@ -41,7 +41,6 @@ templ Base(props ...SEOProps) {
       <meta name="description" content={ seo.Description }/>
       <meta name="author" content="CleanMyBox"/>
       <meta name="robots" content={ seo.Robots }/>
-      <meta name="keywords" content="gmail cleanup, inbox cleaner, unsubscribe newsletters, mailbox cleanup, one-shot email cleaning, cleanplus ai, archive emails, move email to spam"/>
       <link rel="canonical" href={ canonicalURL }/>
 
       <meta property="og:title" content={ seo.Title }/>
@@ -117,6 +116,22 @@ templ Base(props ...SEOProps) {
                   "@type": "Answer",
                   "text": "No. Pricing is one-shot per cleanup run. You only pay when you launch a run."
                 }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I get a refund after payment?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Because cleanup starts immediately and infrastructure resources are consumed in real time, payments are final and non-refundable once a run has started, except where required by law."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need to keep this page open during cleanup?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Cleanup continues on our side even if you close the page, and you can return to check progress anytime."
+                }
               }
             ]
           }
@@ -124,7 +139,6 @@ templ Base(props ...SEOProps) {
       }
 
       <link rel="stylesheet" href="/assets/css/output.css"/>
-      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
       <script src="https://unpkg.com/htmx.org@1.9.12"></script>
       <script>
         (function() {
