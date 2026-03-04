@@ -167,6 +167,13 @@ func (e *Engine) Run(ctx context.Context, opts RunOptions) (Stats, error) {
 func (e *Engine) processMessage(ctx context.Context, mailbox provider.Provider, checkoutSessionID, messageID string, cleanPlus bool, scanner *aiScan) pipelineResult {
 	result := pipelineResult{}
 	result.stats.TotalScanned = 1
+	touched := false
+	finalize := func() pipelineResult {
+		if !touched {
+			result.stats.Kept = 1
+		}
+		return result
+	}
 
 	msg, err := mailbox.GetMessage(ctx, messageID)
 	if err != nil {
@@ -181,12 +188,16 @@ func (e *Engine) processMessage(ctx context.Context, mailbox provider.Provider, 
 		result.stats.Newsletters = 1
 
 		if e.dryRun {
+			touched = true
 			result.stats.Deleted = 1
 		} else {
 			if err := mailbox.MarkRead(ctx, msg.ID); err != nil {
 				log.Printf("mailbox mark read failed (session=%s, message=%s): %v", checkoutSessionID, msg.ID, err)
+			} else {
+				touched = true
 			}
 			if err := mailbox.Delete(ctx, msg.ID); err == nil {
+				touched = true
 				result.stats.Deleted = 1
 			} else {
 				log.Printf("mailbox delete failed (session=%s, message=%s): %v", checkoutSessionID, msg.ID, err)
@@ -205,11 +216,11 @@ func (e *Engine) processMessage(ctx context.Context, mailbox provider.Provider, 
 			}
 		}
 
-		return result
+		return finalize()
 	}
 
 	if !cleanPlus {
-		return result
+		return finalize()
 	}
 
 	result.stats.AIScanned = 1
@@ -226,8 +237,7 @@ func (e *Engine) processMessage(ctx context.Context, mailbox provider.Provider, 
 	})
 	if err != nil {
 		result.stats.Unsure = 1
-		result.stats.Kept = 1
-		return result
+		return finalize()
 	}
 
 	switch decision.Verdict {
@@ -241,53 +251,59 @@ func (e *Engine) processMessage(ctx context.Context, mailbox provider.Provider, 
 	}
 
 	actionStats := Stats{}
-	e.applyAIDecisionAction(ctx, mailbox, checkoutSessionID, msg.ID, decision.Action, &actionStats)
+	if e.applyAIDecisionAction(ctx, mailbox, checkoutSessionID, msg.ID, decision.Action, &actionStats) {
+		touched = true
+	}
 	result.stats.Deleted += actionStats.Deleted
 	result.stats.Archived += actionStats.Archived
 	result.stats.Spam += actionStats.Spam
-	result.stats.Kept += actionStats.Kept
 
-	return result
+	return finalize()
 }
 
-func (e *Engine) applyAIDecisionAction(ctx context.Context, mailbox provider.Provider, checkoutSessionID, messageID, action string, stats *Stats) {
+func (e *Engine) applyAIDecisionAction(ctx context.Context, mailbox provider.Provider, checkoutSessionID, messageID, action string, stats *Stats) bool {
 	switch action {
 	case "delete":
 		if e.dryRun {
 			stats.Deleted++
-			return
+			return true
 		}
+		touched := false
 		if err := mailbox.MarkRead(ctx, messageID); err != nil {
 			log.Printf("mailbox mark read failed (session=%s, message=%s): %v", checkoutSessionID, messageID, err)
+		} else {
+			touched = true
 		}
 		if err := mailbox.Delete(ctx, messageID); err != nil {
 			log.Printf("mailbox delete failed (session=%s, message=%s): %v", checkoutSessionID, messageID, err)
-			return
+			return touched
 		}
 		stats.Deleted++
+		return true
 	case "archive":
 		if e.dryRun {
 			stats.Archived++
-			return
+			return true
 		}
 		if err := mailbox.Archive(ctx, messageID); err != nil {
 			log.Printf("mailbox archive failed (session=%s, message=%s): %v", checkoutSessionID, messageID, err)
-			return
+			return false
 		}
 		stats.Archived++
+		return true
 	case "spam":
 		if e.dryRun {
 			stats.Spam++
-			return
+			return true
 		}
 		if err := mailbox.MoveToSpam(ctx, messageID); err != nil {
 			log.Printf("mailbox spam move failed (session=%s, message=%s): %v", checkoutSessionID, messageID, err)
-			return
+			return false
 		}
 		stats.Spam++
-	case "keep":
-		stats.Kept++
+		return true
 	}
+	return false
 }
 
 func mergeStats(target *Stats, delta Stats) {
