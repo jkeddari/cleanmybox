@@ -61,6 +61,8 @@ func (s *Server) routes() http.Handler {
 	})
 	mux.HandleFunc("GET /", s.HomePage)
 	mux.HandleFunc("GET /login", s.LoginPage)
+	mux.HandleFunc("GET /legal/privacy", s.PrivacyPage)
+	mux.HandleFunc("GET /legal/terms", s.TermsPage)
 	mux.HandleFunc("GET /cleanup", s.CleanupPage)
 	mux.HandleFunc("GET /history", s.HistoryPage)
 	mux.HandleFunc("GET /ui/job-fragment", s.JobFragment)

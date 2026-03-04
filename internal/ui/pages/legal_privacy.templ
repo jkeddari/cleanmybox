@@ -1,0 +1,74 @@
+package pages
+
+import (
+	"github.com/jkeddari/cleanmybox/internal/ui/blocks"
+	"github.com/jkeddari/cleanmybox/internal/ui/layouts"
+)
+
+templ LegalPrivacy(loggedIn bool, email string) {
+	@layouts.Base(layouts.SEOProps{
+		Title:       "Privacy Policy - CleanMyBox",
+		Description: "CleanMyBox privacy policy for Gmail cleanup, billing, and AI processing.",
+		Path:        "/legal/privacy",
+		Robots:      "index, follow",
+	}) {
+		<div class="flex min-h-screen flex-col">
+			@blocks.Navbar(loggedIn, email)
+
+			<main class="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-10 sm:px-6 lg:px-8">
+				<section class="space-y-2">
+					<h1 class="text-3xl font-bold tracking-tight">Privacy Policy</h1>
+					<p class="text-sm text-muted-foreground">Last updated: March 2026</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Who we are</h2>
+					<p class="text-sm text-muted-foreground">CleanMyBox provides one-shot mailbox cleanup services. If you have questions, contact us at <a class="underline decoration-border hover:decoration-foreground" href="mailto:contact@cleanmybox.io">contact@cleanmybox.io</a>.</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Data we collect</h2>
+					<ul class="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+						<li>Google account email address used to authenticate and identify your account.</li>
+						<li>Gmail metadata required to perform cleanup actions (sender, subject, snippet, selected headers, and message identifiers).</li>
+						<li>Cleanup run reports (plan, status, timestamps, aggregated stats, and errors).</li>
+						<li>Payment metadata from Stripe (session IDs, payment status, selected plan).</li>
+					</ul>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">How we use your data</h2>
+					<ul class="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+						<li>Authenticate you with Google and secure access to your account.</li>
+						<li>Execute cleanup operations you explicitly request.</li>
+						<li>Display run history and cleanup reports in your dashboard.</li>
+						<li>Process billing and payment confirmation.</li>
+						<li>Operate, secure, and improve service reliability.</li>
+					</ul>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Third-party processors</h2>
+					<p class="text-sm text-muted-foreground">We use trusted providers to deliver the service: Google APIs (mail access), Stripe (payments), OpenAI (AI classification when CleanPlus is used), and PostgreSQL/Supabase (history storage).</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Retention and deletion</h2>
+					<p class="text-sm text-muted-foreground">We retain operational data only as needed to provide the service and history features. You may request deletion of your stored history data by contacting <a class="underline decoration-border hover:decoration-foreground" href="mailto:contact@cleanmybox.io">contact@cleanmybox.io</a>.</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Your rights</h2>
+					<p class="text-sm text-muted-foreground">Depending on your jurisdiction, you may have rights to access, correct, delete, or restrict processing of your personal data. Contact us to submit any request.</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Security</h2>
+					<p class="text-sm text-muted-foreground">We apply reasonable technical and organizational safeguards to protect your data. However, no system can guarantee absolute security.</p>
+				</section>
+			</main>
+
+			@blocks.Footer()
+		</div>
+	}
+}

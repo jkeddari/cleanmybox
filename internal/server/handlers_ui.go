@@ -23,6 +23,18 @@ func (s *Server) LoginPage(w http.ResponseWriter, r *http.Request) {
 	s.render(w, r, pages.Login(loggedIn, email))
 }
 
+func (s *Server) PrivacyPage(w http.ResponseWriter, r *http.Request) {
+	loggedIn := s.authSvc.IsLoggedIn(r)
+	email, _ := s.authSvc.EmailFromRequest(r)
+	s.render(w, r, pages.LegalPrivacy(loggedIn, email))
+}
+
+func (s *Server) TermsPage(w http.ResponseWriter, r *http.Request) {
+	loggedIn := s.authSvc.IsLoggedIn(r)
+	email, _ := s.authSvc.EmailFromRequest(r)
+	s.render(w, r, pages.LegalTerms(loggedIn, email))
+}
+
 func (s *Server) CleanupPage(w http.ResponseWriter, r *http.Request) {
 	sessionID := strings.TrimSpace(r.URL.Query().Get("session_id"))
 	canceled := r.URL.Query().Get("canceled") == "1"

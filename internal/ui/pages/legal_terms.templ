@@ -1,0 +1,67 @@
+package pages
+
+import (
+	"github.com/jkeddari/cleanmybox/internal/ui/blocks"
+	"github.com/jkeddari/cleanmybox/internal/ui/layouts"
+)
+
+templ LegalTerms(loggedIn bool, email string) {
+	@layouts.Base(layouts.SEOProps{
+		Title:       "Terms of Service - CleanMyBox",
+		Description: "CleanMyBox terms of service for one-shot mailbox cleanup.",
+		Path:        "/legal/terms",
+		Robots:      "index, follow",
+	}) {
+		<div class="flex min-h-screen flex-col">
+			@blocks.Navbar(loggedIn, email)
+
+			<main class="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-10 sm:px-6 lg:px-8">
+				<section class="space-y-2">
+					<h1 class="text-3xl font-bold tracking-tight">Terms of Service</h1>
+					<p class="text-sm text-muted-foreground">Last updated: March 2026</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Agreement</h2>
+					<p class="text-sm text-muted-foreground">By using CleanMyBox, you agree to these Terms. If you do not agree, do not use the service.</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Service description</h2>
+					<p class="text-sm text-muted-foreground">CleanMyBox provides one-shot mailbox cleanup actions based on newsletter detection and, for CleanPlus, AI-based classification. You remain responsible for reviewing and using the service appropriately.</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Payments and refunds</h2>
+					<p class="text-sm text-muted-foreground">Pricing is one-shot per run. Because cleanup starts immediately and infrastructure resources are consumed in real time, payments are final and non-refundable once a run has started, except where required by law.</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Acceptable use</h2>
+					<ul class="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+						<li>Use the service only with accounts you own or are authorized to manage.</li>
+						<li>Do not attempt to abuse, reverse-engineer, disrupt, or overload the service.</li>
+						<li>Do not use the service for unlawful purposes.</li>
+					</ul>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Disclaimer and limitation of liability</h2>
+					<p class="text-sm text-muted-foreground">The service is provided on an "as is" and "as available" basis. To the maximum extent permitted by law, CleanMyBox disclaims warranties and is not liable for indirect, incidental, special, consequential, or punitive damages, or loss of data, revenue, or profits.</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Changes to these terms</h2>
+					<p class="text-sm text-muted-foreground">We may update these Terms from time to time. Continued use of the service after updates means you accept the revised Terms.</p>
+				</section>
+
+				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
+					<h2 class="text-lg font-semibold">Contact</h2>
+					<p class="text-sm text-muted-foreground">For any legal or support question, contact us at <a class="underline decoration-border hover:decoration-foreground" href="mailto:contact@cleanmybox.io">contact@cleanmybox.io</a>.</p>
+				</section>
+			</main>
+
+			@blocks.Footer()
+		</div>
+	}
+}
