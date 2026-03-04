@@ -88,8 +88,8 @@ templ Home(loggedIn bool, email string) {
           <p class="mt-4 text-lg text-muted-foreground">Pay once per cleanup run. No subscription. No hidden fees.</p>
         </div>
         <div class="mx-auto mt-16 grid max-w-6xl gap-8 lg:grid-cols-2">
-          @PlanCard("Clean", "7 EUR", "per cleanup", []string{"Header-based newsletter detection", "Mark as read and move to trash", "Automatic unsubscribe attempts", "Detailed cleanup report"}, loggedIn, "clean", false)
-          @PlanCard("CleanPlus", "11 EUR", "per cleanup", []string{"Everything in Clean", "AI actions: delete, archive, move to spam", "Conservative keep-on-uncertainty policy", "Live progress and resilient processing"}, loggedIn, "cleanplus", true)
+          @PlanCard("Clean", "$5", "per cleanup", []string{"Header-based newsletter detection", "Mark as read and move to trash", "Automatic unsubscribe attempts", "Detailed cleanup report"}, loggedIn, "clean", false)
+          @PlanCard("CleanPlus", "$11", "per cleanup", []string{"Everything in Clean", "AI actions: delete, archive, move to spam", "Conservative keep-on-uncertainty policy", "Live progress and resilient processing"}, loggedIn, "cleanplus", true)
         </div>
       </section>
 

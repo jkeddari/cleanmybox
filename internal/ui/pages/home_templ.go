@@ -122,11 +122,11 @@ func Home(loggedIn bool, email string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = PlanCard("Clean", "7 EUR", "per cleanup", []string{"Header-based newsletter detection", "Mark as read and move to trash", "Automatic unsubscribe attempts", "Detailed cleanup report"}, loggedIn, "clean", false).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = PlanCard("Clean", "$5", "per cleanup", []string{"Header-based newsletter detection", "Mark as read and move to trash", "Automatic unsubscribe attempts", "Detailed cleanup report"}, loggedIn, "clean", false).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = PlanCard("CleanPlus", "11 EUR", "per cleanup", []string{"Everything in Clean", "AI actions: delete, archive, move to spam", "Conservative keep-on-uncertainty policy", "Live progress and resilient processing"}, loggedIn, "cleanplus", true).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = PlanCard("CleanPlus", "$11", "per cleanup", []string{"Everything in Clean", "AI actions: delete, archive, move to spam", "Conservative keep-on-uncertainty policy", "Live progress and resilient processing"}, loggedIn, "cleanplus", true).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -31,7 +31,7 @@ func Navbar(loggedIn bool, email string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur\"><div class=\"mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8\"><div class=\"flex items-center gap-6\"><a href=\"/\" class=\"flex items-center gap-3\"><div class=\"flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-semibold text-primary-foreground\">C</div><span class=\"text-base font-semibold tracking-tight\">cleanmybox</span></a><div class=\"hidden items-center gap-1 md:flex\"><a href=\"#features\" class=\"rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground\">Features</a> <a href=\"#pricing\" class=\"rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground\">Pricing</a> <a href=\"#faq\" class=\"rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground\">FAQ</a></div></div><div class=\"flex items-center gap-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<nav class=\"sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur\"><div class=\"mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8\"><div class=\"flex items-center gap-6\"><a href=\"/\" class=\"flex items-center gap-3\"><div class=\"flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-semibold text-primary-foreground\">C</div><span class=\"text-base font-semibold tracking-tight\">cleanmybox</span></a><div class=\"hidden items-center gap-1 md:flex\"><a href=\"#features\" class=\"rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground\">Features</a> <a href=\"#pricing\" class=\"rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground\">Pricing</a> <a href=\"#faq\" class=\"rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground\">FAQ</a> <a href=\"mailto:contact@cleanmybox.io\" class=\"rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground\">Contact</a></div></div><div class=\"flex items-center gap-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -43,7 +43,7 @@ func Navbar(loggedIn bool, email string) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(email)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/blocks/navbar.templ`, Line: 23, Col: 112}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/blocks/navbar.templ`, Line: 24, Col: 112}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -56,7 +56,7 @@ func Navbar(loggedIn bool, email string) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(email)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/blocks/navbar.templ`, Line: 23, Col: 122}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/blocks/navbar.templ`, Line: 24, Col: 122}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
