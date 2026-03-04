@@ -27,9 +27,6 @@ type JobStatusView struct {
 	TotalCount      int
 	CurrentEmail    string
 	DryRun          bool
-	HeartbeatAgeSec int
-	Stale           bool
-	StaleAfterSec   int
 	ScanDuration    string
 	Error           string
 	Stats           JobStatsView

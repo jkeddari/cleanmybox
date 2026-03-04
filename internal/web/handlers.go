@@ -68,7 +68,6 @@ func (h *Handlers) JobFragment(w http.ResponseWriter, r *http.Request) {
 		TotalCount:      job.TotalCount,
 		CurrentEmail:    firstNonEmpty(job.CurrentEmail, "waiting for next email"),
 		DryRun:          job.DryRun,
-		StaleAfterSec:   job.StaleAfterSeconds,
 		Error:           job.Error,
 		Stats: pages.JobStatsView{
 			Deleted:            job.Stats.Deleted,
@@ -88,11 +87,6 @@ func (h *Handlers) JobFragment(w http.ResponseWriter, r *http.Request) {
 	}
 	view.ScanDuration = formatDuration(job.StartedAt, job.FinishedAt)
 
-	if !job.LastHeartbeatAt.IsZero() {
-		view.HeartbeatAgeSec = int(time.Since(job.LastHeartbeatAt).Seconds())
-		view.Stale = view.HeartbeatAgeSec > maxInt(0, job.StaleAfterSeconds)
-	}
-
 	h.render(w, r, pages.JobStatus(view))
 }
 
@@ -108,13 +102,6 @@ func firstNonEmpty(values ...string) string {
 		}
 	}
 	return ""
-}
-
-func maxInt(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }
 
 func formatDuration(startedAt, finishedAt time.Time) string {
