@@ -80,10 +80,11 @@ func (s *Service) CreateCheckout(plan, sessionRef string) (string, error) {
 	}
 
 	params := &stripe.CheckoutSessionParams{
-		Mode:              stripe.String(string(stripe.CheckoutSessionModePayment)),
-		SuccessURL:        stripe.String(withCheckoutSessionID(s.successURL)),
-		CancelURL:         stripe.String(s.cancelURL),
-		ClientReferenceID: stripe.String(sessionRef),
+		Mode:                 stripe.String(string(stripe.CheckoutSessionModePayment)),
+		SuccessURL:           stripe.String(withCheckoutSessionID(s.successURL)),
+		CancelURL:            stripe.String(s.cancelURL),
+		ClientReferenceID:    stripe.String(sessionRef),
+		AllowPromotionCodes:  stripe.Bool(true),
 		Metadata: map[string]string{
 			"plan": plan,
 		},
