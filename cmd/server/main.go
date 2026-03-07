@@ -26,6 +26,10 @@ func main() {
 	googleClientID := mustEnv("GOOGLE_CLIENT_ID")
 	googleClientSecret := mustEnv("GOOGLE_CLIENT_SECRET")
 	googleRedirectURL := envOr("GOOGLE_REDIRECT_URL", "http://localhost:8080/auth/google/callback")
+	microsoftClientID := envOr("MICROSOFT_CLIENT_ID", "")
+	microsoftClientSecret := envOr("MICROSOFT_CLIENT_SECRET", "")
+	microsoftRedirectURL := envOr("MICROSOFT_REDIRECT_URL", "http://localhost:8080/auth/microsoft/callback")
+	microsoftTenant := envOr("MICROSOFT_TENANT", "common")
 
 	stripeSecretKey := mustEnv("STRIPE_SECRET_KEY")
 	stripePriceClean := mustEnv("STRIPE_PRICE_CLEAN")
@@ -61,12 +65,16 @@ func main() {
 	)
 
 	authService := auth.NewService(auth.Config{
-		ClientID:     googleClientID,
-		ClientSecret: googleClientSecret,
-		RedirectURL:  googleRedirectURL,
-		UIBaseURL:    uiBaseURL,
-		SessionTTL:   30 * time.Minute,
-		StateTTL:     10 * time.Minute,
+		ClientID:              googleClientID,
+		ClientSecret:          googleClientSecret,
+		RedirectURL:           googleRedirectURL,
+		MicrosoftClientID:     microsoftClientID,
+		MicrosoftClientSecret: microsoftClientSecret,
+		MicrosoftRedirectURL:  microsoftRedirectURL,
+		MicrosoftTenant:       microsoftTenant,
+		UIBaseURL:             uiBaseURL,
+		SessionTTL:            30 * time.Minute,
+		StateTTL:              10 * time.Minute,
 	})
 
 	stripeService := stripe.NewService(stripe.Config{

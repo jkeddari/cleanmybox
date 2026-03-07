@@ -4,6 +4,9 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"strings"
 	"sync"
@@ -18,16 +21,21 @@ import (
 const sessionCookieName = "cbox_session"
 
 type Config struct {
-	ClientID     string
-	ClientSecret string
-	RedirectURL  string
-	UIBaseURL    string
-	SessionTTL   time.Duration
-	StateTTL     time.Duration
+	ClientID              string
+	ClientSecret          string
+	RedirectURL           string
+	MicrosoftClientID     string
+	MicrosoftClientSecret string
+	MicrosoftRedirectURL  string
+	MicrosoftTenant       string
+	UIBaseURL             string
+	SessionTTL            time.Duration
+	StateTTL              time.Duration
 }
 
 type session struct {
 	ID        string
+	Provider  string
 	Email     string
 	Token     *oauth2.Token
 	ExpiresAt time.Time
@@ -35,6 +43,7 @@ type session struct {
 
 type stateEntry struct {
 	ExpiresAt time.Time
+	Provider  string
 }
 
 type store struct {
@@ -44,11 +53,12 @@ type store struct {
 }
 
 type Service struct {
-	oauthConfig *oauth2.Config
-	store       *store
-	sessionTTL  time.Duration
-	stateTTL    time.Duration
-	uiBaseURL   string
+	googleOAuthConfig    *oauth2.Config
+	microsoftOAuthConfig *oauth2.Config
+	store                *store
+	sessionTTL           time.Duration
+	stateTTL             time.Duration
+	uiBaseURL            string
 }
 
 func NewService(cfg Config) *Service {
@@ -62,7 +72,7 @@ func NewService(cfg Config) *Service {
 	}
 
 	s := &Service{
-		oauthConfig: &oauth2.Config{
+		googleOAuthConfig: &oauth2.Config{
 			ClientID:     cfg.ClientID,
 			ClientSecret: cfg.ClientSecret,
 			RedirectURL:  cfg.RedirectURL,
@@ -81,6 +91,31 @@ func NewService(cfg Config) *Service {
 		uiBaseURL:  cfg.UIBaseURL,
 	}
 
+	microsoftTenant := strings.TrimSpace(cfg.MicrosoftTenant)
+	if microsoftTenant == "" {
+		microsoftTenant = "common"
+	}
+	if strings.TrimSpace(cfg.MicrosoftClientID) != "" && strings.TrimSpace(cfg.MicrosoftClientSecret) != "" && strings.TrimSpace(cfg.MicrosoftRedirectURL) != "" {
+		s.microsoftOAuthConfig = &oauth2.Config{
+			ClientID:     cfg.MicrosoftClientID,
+			ClientSecret: cfg.MicrosoftClientSecret,
+			RedirectURL:  cfg.MicrosoftRedirectURL,
+			Scopes: []string{
+				"openid",
+				"profile",
+				"email",
+				"offline_access",
+				"User.Read",
+				"Mail.Read",
+				"Mail.ReadWrite",
+			},
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  fmt.Sprintf("https://login.microsoftonline.com/%s/oauth2/v2.0/authorize", microsoftTenant),
+				TokenURL: fmt.Sprintf("https://login.microsoftonline.com/%s/oauth2/v2.0/token", microsoftTenant),
+			},
+		}
+	}
+
 	go s.cleanupLoop()
 
 	return s
@@ -93,8 +128,25 @@ func (s *Service) HandleGoogleAuth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.saveState(state)
-	url := s.oauthConfig.AuthCodeURL(state, oauth2.AccessTypeOffline)
+	s.saveState(state, "google")
+	url := s.googleOAuthConfig.AuthCodeURL(state, oauth2.AccessTypeOffline)
+	http.Redirect(w, r, url, http.StatusFound)
+}
+
+func (s *Service) HandleMicrosoftAuth(w http.ResponseWriter, r *http.Request) {
+	if s.microsoftOAuthConfig == nil {
+		http.Error(w, "microsoft oauth is not configured", http.StatusNotImplemented)
+		return
+	}
+
+	state, err := generateToken(32)
+	if err != nil {
+		http.Error(w, "unable to start oauth", http.StatusInternalServerError)
+		return
+	}
+
+	s.saveState(state, "outlook")
+	url := s.microsoftOAuthConfig.AuthCodeURL(state, oauth2.AccessTypeOffline)
 	http.Redirect(w, r, url, http.StatusFound)
 }
 
@@ -106,17 +158,52 @@ func (s *Service) HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "missing oauth params", http.StatusBadRequest)
 		return
 	}
-	if !s.consumeState(state) {
+	provider, ok := s.consumeState(state)
+	if !ok || provider != "google" {
 		http.Error(w, "invalid oauth state", http.StatusBadRequest)
 		return
 	}
 
-	token, err := s.oauthConfig.Exchange(context.Background(), code)
+	token, err := s.googleOAuthConfig.Exchange(context.Background(), code)
 	if err != nil {
 		http.Error(w, "oauth exchange failed", http.StatusBadRequest)
 		return
 	}
-	email := s.fetchEmail(context.Background(), token)
+	email := s.fetchEmail(context.Background(), "google", token)
+
+	s.completeSession(w, r, "google", email, token)
+}
+
+func (s *Service) HandleMicrosoftCallback(w http.ResponseWriter, r *http.Request) {
+	if s.microsoftOAuthConfig == nil {
+		http.Error(w, "microsoft oauth is not configured", http.StatusNotImplemented)
+		return
+	}
+
+	state := r.URL.Query().Get("state")
+	code := r.URL.Query().Get("code")
+
+	if state == "" || code == "" {
+		http.Error(w, "missing oauth params", http.StatusBadRequest)
+		return
+	}
+	provider, ok := s.consumeState(state)
+	if !ok || provider != "outlook" {
+		http.Error(w, "invalid oauth state", http.StatusBadRequest)
+		return
+	}
+
+	token, err := s.microsoftOAuthConfig.Exchange(context.Background(), code)
+	if err != nil {
+		http.Error(w, "oauth exchange failed", http.StatusBadRequest)
+		return
+	}
+	email := s.fetchEmail(context.Background(), "outlook", token)
+
+	s.completeSession(w, r, "outlook", email, token)
+}
+
+func (s *Service) completeSession(w http.ResponseWriter, r *http.Request, providerName, email string, token *oauth2.Token) {
 
 	sessionID, err := generateToken(32)
 	if err != nil {
@@ -127,6 +214,7 @@ func (s *Service) HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 	s.saveSession(session{
 		ID:        sessionID,
+		Provider:  providerName,
 		Email:     email,
 		Token:     token,
 		ExpiresAt: now.Add(s.sessionTTL),
@@ -194,6 +282,21 @@ func (s *Service) EmailBySessionID(sessionID string) (string, bool) {
 	return sess.Email, true
 }
 
+func (s *Service) ProviderBySessionID(sessionID string) (string, bool) {
+	if strings.TrimSpace(sessionID) == "" {
+		return "", false
+	}
+	sess, ok := s.getSession(sessionID)
+	if !ok {
+		return "", false
+	}
+	providerName := strings.ToLower(strings.TrimSpace(sess.Provider))
+	if providerName == "" {
+		providerName = "google"
+	}
+	return providerName, true
+}
+
 func (s *Service) HandleLogout(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -247,25 +350,25 @@ func (s *Service) cleanupLoop() {
 	}
 }
 
-func (s *Service) saveState(state string) {
+func (s *Service) saveState(state, provider string) {
 	s.store.mu.Lock()
 	defer s.store.mu.Unlock()
-	s.store.states[state] = stateEntry{ExpiresAt: time.Now().Add(s.stateTTL)}
+	s.store.states[state] = stateEntry{ExpiresAt: time.Now().Add(s.stateTTL), Provider: strings.TrimSpace(provider)}
 }
 
-func (s *Service) consumeState(state string) bool {
+func (s *Service) consumeState(state string) (string, bool) {
 	s.store.mu.Lock()
 	defer s.store.mu.Unlock()
 	entry, ok := s.store.states[state]
 	if !ok {
-		return false
+		return "", false
 	}
 	if time.Now().After(entry.ExpiresAt) {
 		delete(s.store.states, state)
-		return false
+		return "", false
 	}
 	delete(s.store.states, state)
-	return true
+	return strings.TrimSpace(entry.Provider), true
 }
 
 func (s *Service) saveSession(sess session) {
@@ -302,7 +405,14 @@ func generateToken(size int) (string, error) {
 	return base64.RawURLEncoding.EncodeToString(b), nil
 }
 
-func (s *Service) fetchEmail(ctx context.Context, token *oauth2.Token) string {
+func (s *Service) fetchEmail(ctx context.Context, providerName string, token *oauth2.Token) string {
+	if strings.EqualFold(providerName, "outlook") {
+		return s.fetchOutlookEmail(ctx, token)
+	}
+	return s.fetchGoogleEmail(ctx, token)
+}
+
+func (s *Service) fetchGoogleEmail(ctx context.Context, token *oauth2.Token) string {
 	if token == nil {
 		return ""
 	}
@@ -315,4 +425,43 @@ func (s *Service) fetchEmail(ctx context.Context, token *oauth2.Token) string {
 		return ""
 	}
 	return strings.TrimSpace(profile.EmailAddress)
+}
+
+func (s *Service) fetchOutlookEmail(ctx context.Context, token *oauth2.Token) string {
+	if token == nil {
+		return ""
+	}
+
+	client := oauth2.NewClient(ctx, oauth2.StaticTokenSource(token))
+	client.Timeout = 15 * time.Second
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://graph.microsoft.com/v1.0/me?$select=mail,userPrincipalName", nil)
+	if err != nil {
+		return ""
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return ""
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return ""
+	}
+
+	var me struct {
+		Mail              string `json:"mail"`
+		UserPrincipalName string `json:"userPrincipalName"`
+	}
+	if err := json.Unmarshal(body, &me); err != nil {
+		return ""
+	}
+	if strings.TrimSpace(me.Mail) != "" {
+		return strings.TrimSpace(me.Mail)
+	}
+	return strings.TrimSpace(me.UserPrincipalName)
 }

@@ -16,6 +16,7 @@ import (
 
 type TokenProvider interface {
 	TokenBySessionID(sessionID string) (*oauth2.Token, bool)
+	ProviderBySessionID(sessionID string) (string, bool)
 }
 
 type Config struct {
@@ -137,15 +138,33 @@ func (s *Service) run(plan, checkoutSessionID, sessionRef string) {
 		s.failJob(checkoutSessionID, "session expired before cleanup start")
 		return
 	}
+	providerName, ok := s.tokens.ProviderBySessionID(sessionRef)
+	if !ok {
+		s.failJob(checkoutSessionID, "session provider missing before cleanup start")
+		return
+	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	go s.watchStall(ctx, cancel, checkoutSessionID)
 	defer cancel()
 
-	mailbox, err := provider.NewGmailProvider(ctx, token)
-	if err != nil {
-		s.failJob(checkoutSessionID, fmt.Sprintf("gmail init failed: %v", err))
-		return
+	var (
+		mailbox provider.Provider
+		err     error
+	)
+	switch strings.ToLower(strings.TrimSpace(providerName)) {
+	case "outlook":
+		mailbox, err = provider.NewOutlookProvider(ctx, token)
+		if err != nil {
+			s.failJob(checkoutSessionID, fmt.Sprintf("outlook init failed: %v", err))
+			return
+		}
+	default:
+		mailbox, err = provider.NewGmailProvider(ctx, token)
+		if err != nil {
+			s.failJob(checkoutSessionID, fmt.Sprintf("gmail init failed: %v", err))
+			return
+		}
 	}
 
 	stats, err := s.engine.Run(ctx, RunOptions{

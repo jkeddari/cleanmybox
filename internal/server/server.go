@@ -69,6 +69,8 @@ func (s *Server) routes() http.Handler {
 
 	mux.HandleFunc("GET /auth/google", s.authSvc.HandleGoogleAuth)
 	mux.HandleFunc("GET /auth/google/callback", s.authSvc.HandleGoogleCallback)
+	mux.HandleFunc("GET /auth/microsoft", s.authSvc.HandleMicrosoftAuth)
+	mux.HandleFunc("GET /auth/microsoft/callback", s.authSvc.HandleMicrosoftCallback)
 	mux.HandleFunc("POST /auth/logout", s.authSvc.HandleLogout)
 
 	mux.HandleFunc("GET /api/session", func(w http.ResponseWriter, r *http.Request) {

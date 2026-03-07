@@ -19,7 +19,7 @@ templ Login(loggedIn bool, email string) {
         <a href="/" class="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-muted">← Back to home</a>
 
         <h1 class="mt-6 text-3xl font-bold">Connect your mailbox</h1>
-        <p class="mt-2 text-sm text-muted-foreground">Start with Google. More providers like Outlook will be available soon.</p>
+        <p class="mt-2 text-sm text-muted-foreground">Choose your mailbox provider to start a secure one-shot cleanup.</p>
 
         <div class="mt-8 space-y-3">
           <a href="/auth/google" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-muted px-4 py-3 text-sm font-semibold hover:bg-accent hover:text-accent-foreground">
@@ -27,10 +27,10 @@ templ Login(loggedIn bool, email string) {
             <span>Continue with Google</span>
           </a>
 
-          <button type="button" disabled class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border px-4 py-3 text-sm text-muted-foreground">
+          <a href="/auth/microsoft" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-muted px-4 py-3 text-sm font-semibold hover:bg-accent hover:text-accent-foreground">
             <span>O</span>
-            <span>Outlook (coming soon)</span>
-          </button>
+            <span>Continue with Outlook</span>
+          </a>
         </div>
 
         <p class="mt-6 text-xs text-muted-foreground">One provider per cleanup run. Sessions are short-lived for privacy.</p>
