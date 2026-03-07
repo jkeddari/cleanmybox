@@ -8,8 +8,8 @@ import (
 
 templ Home(loggedIn bool, email string) {
   @layouts.Base(layouts.SEOProps{
-    Title:       "CleanMyBox - One-shot Gmail cleanup with AI actions",
-    Description: "Clean your Gmail in one run with Delete, Archive, and Move-to-Spam actions. Unsubscribe safely and track cleanup progress in real time.",
+    Title:       "CleanMyBox - Clean Gmail and Outlook inboxes in one run",
+    Description: "Clean Gmail and Outlook inboxes in one run. Remove newsletters, unsubscribe safely, and use AI actions to delete, archive, move to spam, or keep important emails.",
     Path:        "/",
     Robots:      "index, follow",
   }) {
@@ -18,14 +18,14 @@ templ Home(loggedIn bool, email string) {
     <main class="mx-auto w-full max-w-6xl space-y-20 px-4 py-10 sm:px-6 lg:px-8">
       <section class="grid gap-10 py-8 lg:grid-cols-2 lg:items-center">
         <div class="space-y-6">
-          <span class="inline-flex rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">Built for inbox clarity</span>
+          <span class="inline-flex rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">Gmail and Outlook supported</span>
           <h1 class="text-5xl font-bold leading-tight tracking-tight sm:text-6xl">
-            Clean your mailbox
+            Clean your inbox
             <br/>
-            <span class="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">without breaking trust.</span>
+            <span class="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">without breaking important mail.</span>
           </h1>
           <p class="max-w-2xl text-lg text-muted-foreground">
-            CleanMyBox scans newsletters, applies conservative AI actions, and keeps important messages safe with a default keep-on-uncertainty policy.
+            CleanMyBox is an email cleaner for Gmail and Outlook that finds newsletters, attempts safe unsubscribe flows, and applies conservative AI actions with a default keep-on-uncertainty policy.
           </p>
 
           <div class="flex flex-wrap items-center gap-3">
@@ -57,7 +57,7 @@ templ Home(loggedIn bool, email string) {
       <section id="features" class="py-24">
         <div class="mx-auto max-w-3xl space-y-3 text-center">
           <h2 class="text-4xl font-bold tracking-tight">Mailbox cleanup that stays fast and safe</h2>
-          <p class="text-lg text-muted-foreground">A focused workflow with conservative decisions, production-grade reliability, and real-time execution visibility.</p>
+          <p class="text-lg text-muted-foreground">A focused inbox cleaning workflow for Gmail and Outlook, with conservative decisions, production-grade reliability, and real-time execution visibility.</p>
         </div>
         <div class="mx-auto mt-16 grid max-w-6xl gap-8 md:grid-cols-2 lg:grid-cols-3">
           @FeatureCard("scan", "Header-based newsletter detection", "Use RFC signals like List-Unsubscribe and List-Id to find bulk email precisely.")
@@ -66,6 +66,30 @@ templ Home(loggedIn bool, email string) {
           @FeatureCard("lock", "Security-first by design", "Run with short-lived OAuth sessions and avoid long-term mailbox data retention.")
           @FeatureCard("server", "Go-native resilient backend", "Process jobs with idempotent webhook handling and robust worker execution.")
           @FeatureCard("pulse", "Live action monitoring", "Track processing progress and action counters in real time with stalled-job detection.")
+        </div>
+      </section>
+
+      <section class="py-10">
+        <div class="mx-auto grid max-w-6xl gap-8 rounded-3xl border border-border bg-card/60 p-8 lg:grid-cols-[1.2fr_0.8fr]">
+          <div class="space-y-4">
+            <h2 class="text-3xl font-bold tracking-tight">Email cleaner for Gmail and Outlook</h2>
+            <p class="text-base text-muted-foreground">
+              CleanMyBox is built for people who want to clean an overloaded inbox without manually sorting hundreds of messages. It works with Gmail and Outlook accounts, identifies newsletter and bulk email patterns, and executes one-shot cleanup runs with transparent reporting.
+            </p>
+            <p class="text-base text-muted-foreground">
+              If you are looking for an inbox cleaner, an unsubscribe tool, or a safer way to remove promotional emails in bulk, CleanMyBox is designed to reduce clutter while protecting important messages with conservative fallback rules.
+            </p>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <div class="rounded-2xl border border-border bg-background p-4">
+              <p class="text-sm font-semibold">Works with</p>
+              <p class="mt-1 text-sm text-muted-foreground">Gmail, Outlook.com, and Microsoft 365 mailboxes connected through OAuth.</p>
+            </div>
+            <div class="rounded-2xl border border-border bg-background p-4">
+              <p class="text-sm font-semibold">Best for</p>
+              <p class="mt-1 text-sm text-muted-foreground">Newsletter cleanup, bulk inbox decluttering, safe unsubscribe flows, and conservative AI-assisted triage.</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -101,8 +125,9 @@ templ Home(loggedIn bool, email string) {
           </div>
           <div class="mt-16">
             <div class="">
+            @FaqItem("Which mailbox providers are supported?", "CleanMyBox currently supports Gmail and Outlook mailboxes through secure OAuth connections.")
             @FaqItem("Do you keep my mailbox data?", "No long-term retention. Cleanup jobs keep short-lived operational state only.")
-            @FaqItem("How does Clean work?", "Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks as read, moves to trash, and attempts safe unsubscribe actions.")
+            @FaqItem("How does Clean work?", "Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks messages as read, moves them to trash, and attempts safe unsubscribe actions.")
             @FaqItem("How does CleanPlus use AI?", "CleanPlus returns an action for each analyzed email: delete, archive, move to spam, or keep. If the model is unsure, the email is kept.")
             @FaqItem("Is this a subscription?", "No. Pricing is one-shot per cleanup run. You only pay when you launch a run.")
             @FaqItem("Can I get a refund after payment?", "Because cleanup starts immediately and infrastructure resources are consumed in real time, payments are final and non-refundable once a run has started, except where required by law.")

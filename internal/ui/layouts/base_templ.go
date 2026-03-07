@@ -37,8 +37,8 @@ func Base(props ...SEOProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		seo := SEOProps{
-			Title:       "CleanMyBox - One-shot Gmail cleanup",
-			Description: "CleanMyBox helps you clean Gmail safely with one-shot pricing. Detect newsletters, unsubscribe automatically, and apply AI actions: delete, archive, or move to spam.",
+			Title:       "CleanMyBox - Email cleaner for Gmail and Outlook",
+			Description: "CleanMyBox is an email cleaner for Gmail and Outlook. Remove newsletters, unsubscribe safely, and clean your inbox with one-shot pricing and conservative AI actions.",
 			Path:        "/",
 			Robots:      "index, follow",
 		}
@@ -84,14 +84,14 @@ func Base(props ...SEOProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><meta name=\"author\" content=\"CleanMyBox\"><meta name=\"robots\" content=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><meta name=\"author\" content=\"CleanMyBox\"><meta name=\"application-name\" content=\"CleanMyBox\"><meta name=\"robots\" content=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(seo.Robots)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 43, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 44, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -104,7 +104,7 @@ func Base(props ...SEOProps) templ.Component {
 		var templ_7745c5c3_Var5 templ.SafeURL
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinURLErrs(canonicalURL)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 44, Col: 47}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 45, Col: 47}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -117,7 +117,7 @@ func Base(props ...SEOProps) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(seo.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 46, Col: 51}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 47, Col: 51}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -130,7 +130,7 @@ func Base(props ...SEOProps) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(seo.Description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 47, Col: 63}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 48, Col: 63}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -143,33 +143,33 @@ func Base(props ...SEOProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(canonicalURL)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 49, Col: 52}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 50, Col: 52}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\"><meta property=\"og:site_name\" content=\"CleanMyBox\"><meta property=\"og:image\" content=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\"><meta property=\"og:locale\" content=\"en_US\"><meta property=\"og:site_name\" content=\"CleanMyBox\"><meta property=\"og:image\" content=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(socialImageURL)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 51, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 53, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\"><meta property=\"og:image:width\" content=\"1200\"><meta property=\"og:image:height\" content=\"630\"><meta property=\"og:image:alt\" content=\"CleanMyBox - Secure one-shot Gmail cleanup\"><meta name=\"twitter:card\" content=\"summary_large_image\"><meta name=\"twitter:title\" content=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\"><meta property=\"og:image:width\" content=\"1200\"><meta property=\"og:image:height\" content=\"630\"><meta property=\"og:image:alt\" content=\"CleanMyBox - Email cleaner for Gmail and Outlook\"><meta name=\"twitter:card\" content=\"summary_large_image\"><meta name=\"twitter:title\" content=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(seo.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 57, Col: 52}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 59, Col: 52}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -182,7 +182,7 @@ func Base(props ...SEOProps) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(seo.Description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 58, Col: 64}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 60, Col: 64}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -195,18 +195,18 @@ func Base(props ...SEOProps) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(socialImageURL)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 59, Col: 57}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/layouts/base.templ`, Line: 61, Col: 57}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\"><meta name=\"twitter:image:alt\" content=\"CleanMyBox - Secure one-shot Gmail cleanup\"><meta name=\"theme-color\" content=\"#000000\"><link rel=\"icon\" type=\"image/svg+xml\" href=\"/assets/img/favicon.svg\"><link rel=\"alternate icon\" href=\"/assets/img/favicon.ico\"><script type=\"application/ld+json\">\n        {\n          \"@context\": \"https://schema.org\",\n          \"@type\": \"WebSite\",\n          \"name\": \"CleanMyBox\",\n          \"url\": \"https://cleanmybox.io\",\n          \"description\": \"One-shot Gmail cleanup with newsletter detection, safe unsubscribe, and AI actions: delete, archive, or move to spam.\",\n          \"inLanguage\": \"en\"\n        }\n      </script><script type=\"application/ld+json\">\n        {\n          \"@context\": \"https://schema.org\",\n          \"@type\": \"Organization\",\n          \"name\": \"CleanMyBox\",\n          \"url\": \"https://cleanmybox.io\",\n          \"logo\": \"https://cleanmybox.io/assets/img/social-preview.png\"\n        }\n      </script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\"><meta name=\"twitter:image:alt\" content=\"CleanMyBox - Email cleaner for Gmail and Outlook\"><meta name=\"theme-color\" content=\"#000000\"><link rel=\"icon\" type=\"image/svg+xml\" href=\"/assets/img/favicon.svg\"><link rel=\"alternate icon\" href=\"/assets/img/favicon.ico\"><script type=\"application/ld+json\">\n        {\n          \"@context\": \"https://schema.org\",\n          \"@type\": \"WebSite\",\n          \"name\": \"CleanMyBox\",\n          \"url\": \"https://cleanmybox.io\",\n          \"description\": \"Email cleaner for Gmail and Outlook with newsletter detection, safe unsubscribe, and AI actions.\",\n          \"inLanguage\": \"en\"\n        }\n      </script><script type=\"application/ld+json\">\n        {\n          \"@context\": \"https://schema.org\",\n          \"@type\": \"Organization\",\n          \"name\": \"CleanMyBox\",\n          \"url\": \"https://cleanmybox.io\",\n          \"logo\": \"https://cleanmybox.io/assets/img/social-preview.png\"\n        }\n      </script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if seo.Path == "/" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<script type=\"application/ld+json\">\n          {\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n              {\n                \"@type\": \"Question\",\n                \"name\": \"Do you keep my mailbox data?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"No long-term retention. Cleanup jobs keep short-lived operational state only.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"How does Clean work?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks as read, moves to trash, and attempts safe unsubscribe actions.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"How does CleanPlus use AI?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"CleanPlus returns an action for each analyzed email: delete, archive, move to spam, or keep. If the model is unsure, the email is kept.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"Is this a subscription?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"No. Pricing is one-shot per cleanup run. You only pay when you launch a run.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"Can I get a refund after payment?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"Because cleanup starts immediately and infrastructure resources are consumed in real time, payments are final and non-refundable once a run has started, except where required by law.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"Do I need to keep this page open during cleanup?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"No. Cleanup continues on our side even if you close the page, and you can return to check progress anytime.\"\n                }\n              }\n            ]\n          }\n        </script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<script type=\"application/ld+json\">\n          {\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"SoftwareApplication\",\n            \"name\": \"CleanMyBox\",\n            \"applicationCategory\": \"BusinessApplication\",\n            \"applicationSubCategory\": \"Email Cleanup Software\",\n            \"operatingSystem\": \"Web\",\n            \"url\": \"https://cleanmybox.io\",\n            \"description\": \"CleanMyBox helps people clean Gmail and Outlook inboxes with newsletter detection, unsubscribe automation, and conservative AI actions.\",\n            \"offers\": [\n              {\n                \"@type\": \"Offer\",\n                \"name\": \"Clean\",\n                \"price\": \"5\",\n                \"priceCurrency\": \"USD\"\n              },\n              {\n                \"@type\": \"Offer\",\n                \"name\": \"CleanPlus\",\n                \"price\": \"11\",\n                \"priceCurrency\": \"USD\"\n              }\n            ]\n          }\n        </script> <script type=\"application/ld+json\">\n          {\n            \"@context\": \"https://schema.org\",\n            \"@type\": \"FAQPage\",\n            \"mainEntity\": [\n              {\n                \"@type\": \"Question\",\n                \"name\": \"Which mailbox providers does CleanMyBox support?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"CleanMyBox currently supports Gmail and Outlook mailboxes through secure OAuth login.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"Do you keep my mailbox data?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"No long-term retention. Cleanup jobs keep short-lived operational state only.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"How does Clean work?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks messages as read, moves them to trash, and attempts safe unsubscribe actions.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"How does CleanPlus use AI?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"CleanPlus returns an action for each analyzed email: delete, archive, move to spam, or keep. If the model is unsure, the email is kept.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"Is this a subscription?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"No. Pricing is one-shot per cleanup run. You only pay when you launch a run.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"Can I get a refund after payment?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"Because cleanup starts immediately and infrastructure resources are consumed in real time, payments are final and non-refundable once a run has started, except where required by law.\"\n                }\n              },\n              {\n                \"@type\": \"Question\",\n                \"name\": \"Do I need to keep this page open during cleanup?\",\n                \"acceptedAnswer\": {\n                  \"@type\": \"Answer\",\n                  \"text\": \"No. Cleanup continues on our side even if you close the page, and you can return to check progress anytime.\"\n                }\n              }\n            ]\n          }\n        </script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

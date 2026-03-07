@@ -51,7 +51,7 @@ func Home(loggedIn bool, email string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main class=\"mx-auto w-full max-w-6xl space-y-20 px-4 py-10 sm:px-6 lg:px-8\"><section class=\"grid gap-10 py-8 lg:grid-cols-2 lg:items-center\"><div class=\"space-y-6\"><span class=\"inline-flex rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground\">Built for inbox clarity</span><h1 class=\"text-5xl font-bold leading-tight tracking-tight sm:text-6xl\">Clean your mailbox<br><span class=\"bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent\">without breaking trust.</span></h1><p class=\"max-w-2xl text-lg text-muted-foreground\">CleanMyBox scans newsletters, applies conservative AI actions, and keeps important messages safe with a default keep-on-uncertainty policy.</p><div class=\"flex flex-wrap items-center gap-3\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, " <main class=\"mx-auto w-full max-w-6xl space-y-20 px-4 py-10 sm:px-6 lg:px-8\"><section class=\"grid gap-10 py-8 lg:grid-cols-2 lg:items-center\"><div class=\"space-y-6\"><span class=\"inline-flex rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground\">Gmail and Outlook supported</span><h1 class=\"text-5xl font-bold leading-tight tracking-tight sm:text-6xl\">Clean your inbox<br><span class=\"bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent\">without breaking important mail.</span></h1><p class=\"max-w-2xl text-lg text-muted-foreground\">CleanMyBox is an email cleaner for Gmail and Outlook that finds newsletters, attempts safe unsubscribe flows, and applies conservative AI actions with a default keep-on-uncertainty policy.</p><div class=\"flex flex-wrap items-center gap-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -66,7 +66,7 @@ func Home(loggedIn bool, email string) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<span class=\"text-sm text-muted-foreground\">One-shot payment. No account retention.</span></div></div><div id=\"hero-snapshot\" class=\"rounded-3xl border border-border bg-card p-6 shadow-sm\"><p class=\"text-sm text-muted-foreground\">Live processing snapshot</p><p class=\"mt-2 text-4xl font-bold\"><span data-counter=\"scanned\" data-target=\"214\">214</span> / <span data-counter=\"total\" data-target=\"214\">214</span></p><p class=\"text-sm text-muted-foreground\">emails scanned safely</p><div class=\"mt-5 h-2 overflow-hidden rounded-full bg-muted\"><div data-progress=\"bar\" class=\"h-full w-0 rounded-full bg-primary\"></div></div><div class=\"mt-5 grid grid-cols-2 gap-3 text-sm\"><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"newsletters\" data-target=\"62\">62</p><p class=\"text-muted-foreground\">newsletters</p></div><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"spam\" data-target=\"27\">27</p><p class=\"text-muted-foreground\">spam</p></div><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"useless\" data-target=\"14\">14</p><p class=\"text-muted-foreground\">useless</p></div><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"kept\" data-target=\"111\">111</p><p class=\"text-muted-foreground\">kept</p></div></div></div></section><section id=\"features\" class=\"py-24\"><div class=\"mx-auto max-w-3xl space-y-3 text-center\"><h2 class=\"text-4xl font-bold tracking-tight\">Mailbox cleanup that stays fast and safe</h2><p class=\"text-lg text-muted-foreground\">A focused workflow with conservative decisions, production-grade reliability, and real-time execution visibility.</p></div><div class=\"mx-auto mt-16 grid max-w-6xl gap-8 md:grid-cols-2 lg:grid-cols-3\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<span class=\"text-sm text-muted-foreground\">One-shot payment. No account retention.</span></div></div><div id=\"hero-snapshot\" class=\"rounded-3xl border border-border bg-card p-6 shadow-sm\"><p class=\"text-sm text-muted-foreground\">Live processing snapshot</p><p class=\"mt-2 text-4xl font-bold\"><span data-counter=\"scanned\" data-target=\"214\">214</span> / <span data-counter=\"total\" data-target=\"214\">214</span></p><p class=\"text-sm text-muted-foreground\">emails scanned safely</p><div class=\"mt-5 h-2 overflow-hidden rounded-full bg-muted\"><div data-progress=\"bar\" class=\"h-full w-0 rounded-full bg-primary\"></div></div><div class=\"mt-5 grid grid-cols-2 gap-3 text-sm\"><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"newsletters\" data-target=\"62\">62</p><p class=\"text-muted-foreground\">newsletters</p></div><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"spam\" data-target=\"27\">27</p><p class=\"text-muted-foreground\">spam</p></div><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"useless\" data-target=\"14\">14</p><p class=\"text-muted-foreground\">useless</p></div><div class=\"rounded-lg bg-muted p-3\"><p class=\"font-semibold\" data-counter=\"kept\" data-target=\"111\">111</p><p class=\"text-muted-foreground\">kept</p></div></div></div></section><section id=\"features\" class=\"py-24\"><div class=\"mx-auto max-w-3xl space-y-3 text-center\"><h2 class=\"text-4xl font-bold tracking-tight\">Mailbox cleanup that stays fast and safe</h2><p class=\"text-lg text-muted-foreground\">A focused inbox cleaning workflow for Gmail and Outlook, with conservative decisions, production-grade reliability, and real-time execution visibility.</p></div><div class=\"mx-auto mt-16 grid max-w-6xl gap-8 md:grid-cols-2 lg:grid-cols-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -94,7 +94,7 @@ func Home(loggedIn bool, email string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></section><section class=\"py-16\"><div class=\"text-center\"><p class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Built and powered by Golang</p><div class=\"mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-8 grayscale opacity-60\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div></section><section class=\"py-10\"><div class=\"mx-auto grid max-w-6xl gap-8 rounded-3xl border border-border bg-card/60 p-8 lg:grid-cols-[1.2fr_0.8fr]\"><div class=\"space-y-4\"><h2 class=\"text-3xl font-bold tracking-tight\">Email cleaner for Gmail and Outlook</h2><p class=\"text-base text-muted-foreground\">CleanMyBox is built for people who want to clean an overloaded inbox without manually sorting hundreds of messages. It works with Gmail and Outlook accounts, identifies newsletter and bulk email patterns, and executes one-shot cleanup runs with transparent reporting.</p><p class=\"text-base text-muted-foreground\">If you are looking for an inbox cleaner, an unsubscribe tool, or a safer way to remove promotional emails in bulk, CleanMyBox is designed to reduce clutter while protecting important messages with conservative fallback rules.</p></div><div class=\"grid gap-3 sm:grid-cols-2 lg:grid-cols-1\"><div class=\"rounded-2xl border border-border bg-background p-4\"><p class=\"text-sm font-semibold\">Works with</p><p class=\"mt-1 text-sm text-muted-foreground\">Gmail, Outlook.com, and Microsoft 365 mailboxes connected through OAuth.</p></div><div class=\"rounded-2xl border border-border bg-background p-4\"><p class=\"text-sm font-semibold\">Best for</p><p class=\"mt-1 text-sm text-muted-foreground\">Newsletter cleanup, bulk inbox decluttering, safe unsubscribe flows, and conservative AI-assisted triage.</p></div></div></div></section><section class=\"py-16\"><div class=\"text-center\"><p class=\"text-sm font-medium uppercase tracking-wide text-muted-foreground\">Built and powered by Golang</p><div class=\"mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-8 grayscale opacity-60\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -134,11 +134,15 @@ func Home(loggedIn bool, email string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
+			templ_7745c5c3_Err = FaqItem("Which mailbox providers are supported?", "CleanMyBox currently supports Gmail and Outlook mailboxes through secure OAuth connections.").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 			templ_7745c5c3_Err = FaqItem("Do you keep my mailbox data?", "No long-term retention. Cleanup jobs keep short-lived operational state only.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = FaqItem("How does Clean work?", "Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks as read, moves to trash, and attempts safe unsubscribe actions.").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = FaqItem("How does Clean work?", "Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks messages as read, moves them to trash, and attempts safe unsubscribe actions.").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -173,8 +177,8 @@ func Home(loggedIn bool, email string) templ.Component {
 			return nil
 		})
 		templ_7745c5c3_Err = layouts.Base(layouts.SEOProps{
-			Title:       "CleanMyBox - One-shot Gmail cleanup with AI actions",
-			Description: "Clean your Gmail in one run with Delete, Archive, and Move-to-Spam actions. Unsubscribe safely and track cleanup progress in real time.",
+			Title:       "CleanMyBox - Clean Gmail and Outlook inboxes in one run",
+			Description: "Clean Gmail and Outlook inboxes in one run. Remove newsletters, unsubscribe safely, and use AI actions to delete, archive, move to spam, or keep important emails.",
 			Path:        "/",
 			Robots:      "index, follow",
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
@@ -221,7 +225,7 @@ func FeatureCard(iconName, title, description string) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 232, Col: 49}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 257, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -234,7 +238,7 @@ func FeatureCard(iconName, title, description string) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 233, Col: 67}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 258, Col: 67}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -284,7 +288,7 @@ func PoweredItem(iconName, label string) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 242, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 267, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -336,7 +340,7 @@ func PlanCard(name, price, period string, items []string, loggedIn bool, planKey
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 252, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 277, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -349,7 +353,7 @@ func PlanCard(name, price, period string, items []string, loggedIn bool, planKey
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(price)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 256, Col: 63}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 281, Col: 63}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -362,7 +366,7 @@ func PlanCard(name, price, period string, items []string, loggedIn bool, planKey
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(period)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 257, Col: 52}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 282, Col: 52}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -388,7 +392,7 @@ func PlanCard(name, price, period string, items []string, loggedIn bool, planKey
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(item)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 263, Col: 38}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 288, Col: 38}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -412,7 +416,7 @@ func PlanCard(name, price, period string, items []string, loggedIn bool, planKey
 				var templ_7745c5c3_Var13 string
 				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(planKey)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 270, Col: 62}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 295, Col: 62}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 				if templ_7745c5c3_Err != nil {
@@ -425,7 +429,7 @@ func PlanCard(name, price, period string, items []string, loggedIn bool, planKey
 				var templ_7745c5c3_Var14 string
 				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 270, Col: 646}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 295, Col: 646}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 				if templ_7745c5c3_Err != nil {
@@ -443,7 +447,7 @@ func PlanCard(name, price, period string, items []string, loggedIn bool, planKey
 				var templ_7745c5c3_Var15 string
 				templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(planKey)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 272, Col: 62}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 297, Col: 62}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 				if templ_7745c5c3_Err != nil {
@@ -456,7 +460,7 @@ func PlanCard(name, price, period string, items []string, loggedIn bool, planKey
 				var templ_7745c5c3_Var16 string
 				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 272, Col: 715}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 297, Col: 715}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 				if templ_7745c5c3_Err != nil {
@@ -516,7 +520,7 @@ func FaqItem(question, answer string) templ.Component {
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(question)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 289, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 314, Col: 16}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
@@ -529,7 +533,7 @@ func FaqItem(question, answer string) templ.Component {
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(answer)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 295, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/ui/pages/home.templ`, Line: 320, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {

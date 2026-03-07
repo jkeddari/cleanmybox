@@ -8,7 +8,7 @@ import (
 templ LegalPrivacy(loggedIn bool, email string) {
 	@layouts.Base(layouts.SEOProps{
 		Title:       "Privacy Policy - CleanMyBox",
-		Description: "CleanMyBox privacy policy for Gmail cleanup, billing, and AI processing.",
+		Description: "CleanMyBox privacy policy for Gmail and Outlook cleanup, billing, and AI processing.",
 		Path:        "/legal/privacy",
 		Robots:      "index, follow",
 	}) {
@@ -29,8 +29,8 @@ templ LegalPrivacy(loggedIn bool, email string) {
 				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
 					<h2 class="text-lg font-semibold">Data we collect</h2>
 					<ul class="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-						<li>Google account email address used to authenticate and identify your account.</li>
-						<li>Gmail metadata required to perform cleanup actions (sender, subject, snippet, selected headers, and message identifiers).</li>
+						<li>Google or Microsoft account email address used to authenticate and identify your account.</li>
+						<li>Mailbox metadata required to perform cleanup actions (sender, subject, snippet, selected headers, and message identifiers).</li>
 						<li>Cleanup run reports (plan, status, timestamps, aggregated stats, and errors).</li>
 						<li>Payment metadata from Stripe (session IDs, payment status, selected plan).</li>
 					</ul>
@@ -39,7 +39,7 @@ templ LegalPrivacy(loggedIn bool, email string) {
 				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
 					<h2 class="text-lg font-semibold">How we use your data</h2>
 					<ul class="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
-						<li>Authenticate you with Google and secure access to your account.</li>
+						<li>Authenticate you with Google or Microsoft and secure access to your account.</li>
 						<li>Execute cleanup operations you explicitly request.</li>
 						<li>Display run history and cleanup reports in your dashboard.</li>
 						<li>Process billing and payment confirmation.</li>
@@ -49,7 +49,7 @@ templ LegalPrivacy(loggedIn bool, email string) {
 
 				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
 					<h2 class="text-lg font-semibold">Third-party processors</h2>
-					<p class="text-sm text-muted-foreground">We use trusted providers to deliver the service: Google APIs (mail access), Stripe (payments), OpenAI (AI classification when CleanPlus is used), and PostgreSQL/Supabase (history storage).</p>
+					<p class="text-sm text-muted-foreground">We use trusted providers to deliver the service: Google APIs and Microsoft Graph (mail access), Stripe (payments), OpenAI (AI classification when CleanPlus is used), and PostgreSQL/Supabase (history storage).</p>
 				</section>
 
 				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">

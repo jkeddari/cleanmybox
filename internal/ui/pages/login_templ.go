@@ -62,7 +62,7 @@ func Login(loggedIn bool, email string) templ.Component {
 		})
 		templ_7745c5c3_Err = layouts.Base(layouts.SEOProps{
 			Title:       "Login - CleanMyBox",
-			Description: "Connect your Google mailbox to start a one-shot cleanup run with CleanMyBox.",
+			Description: "Connect your Gmail or Outlook mailbox to start a one-shot cleanup run with CleanMyBox.",
 			Path:        "/login",
 			Robots:      "noindex, nofollow",
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)

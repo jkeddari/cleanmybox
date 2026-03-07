@@ -8,7 +8,7 @@ import (
 templ LegalTerms(loggedIn bool, email string) {
 	@layouts.Base(layouts.SEOProps{
 		Title:       "Terms of Service - CleanMyBox",
-		Description: "CleanMyBox terms of service for one-shot mailbox cleanup.",
+		Description: "CleanMyBox terms of service for one-shot Gmail and Outlook mailbox cleanup.",
 		Path:        "/legal/terms",
 		Robots:      "index, follow",
 	}) {
@@ -28,7 +28,7 @@ templ LegalTerms(loggedIn bool, email string) {
 
 				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">
 					<h2 class="text-lg font-semibold">Service description</h2>
-					<p class="text-sm text-muted-foreground">CleanMyBox provides one-shot mailbox cleanup actions based on newsletter detection and, for CleanPlus, AI-based classification. You remain responsible for reviewing and using the service appropriately.</p>
+					<p class="text-sm text-muted-foreground">CleanMyBox provides one-shot mailbox cleanup actions for Gmail and Outlook accounts based on newsletter detection and, for CleanPlus, AI-based classification. You remain responsible for reviewing and using the service appropriately.</p>
 				</section>
 
 				<section class="space-y-4 rounded-2xl border border-border bg-card p-6">

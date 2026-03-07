@@ -10,8 +10,8 @@ type SEOProps struct {
 templ Base(props ...SEOProps) {
   {{
     seo := SEOProps{
-      Title:       "CleanMyBox - One-shot Gmail cleanup",
-      Description: "CleanMyBox helps you clean Gmail safely with one-shot pricing. Detect newsletters, unsubscribe automatically, and apply AI actions: delete, archive, or move to spam.",
+      Title:       "CleanMyBox - Email cleaner for Gmail and Outlook",
+      Description: "CleanMyBox is an email cleaner for Gmail and Outlook. Remove newsletters, unsubscribe safely, and clean your inbox with one-shot pricing and conservative AI actions.",
       Path:        "/",
       Robots:      "index, follow",
     }
@@ -40,6 +40,7 @@ templ Base(props ...SEOProps) {
       <title>{ seo.Title }</title>
       <meta name="description" content={ seo.Description }/>
       <meta name="author" content="CleanMyBox"/>
+      <meta name="application-name" content="CleanMyBox"/>
       <meta name="robots" content={ seo.Robots }/>
       <link rel="canonical" href={ canonicalURL }/>
 
@@ -47,17 +48,18 @@ templ Base(props ...SEOProps) {
       <meta property="og:description" content={ seo.Description }/>
       <meta property="og:type" content="website"/>
       <meta property="og:url" content={ canonicalURL }/>
+      <meta property="og:locale" content="en_US"/>
       <meta property="og:site_name" content="CleanMyBox"/>
       <meta property="og:image" content={ socialImageURL }/>
       <meta property="og:image:width" content="1200"/>
       <meta property="og:image:height" content="630"/>
-      <meta property="og:image:alt" content="CleanMyBox - Secure one-shot Gmail cleanup"/>
+      <meta property="og:image:alt" content="CleanMyBox - Email cleaner for Gmail and Outlook"/>
 
       <meta name="twitter:card" content="summary_large_image"/>
       <meta name="twitter:title" content={ seo.Title }/>
       <meta name="twitter:description" content={ seo.Description }/>
       <meta name="twitter:image" content={ socialImageURL }/>
-      <meta name="twitter:image:alt" content="CleanMyBox - Secure one-shot Gmail cleanup"/>
+      <meta name="twitter:image:alt" content="CleanMyBox - Email cleaner for Gmail and Outlook"/>
       <meta name="theme-color" content="#000000"/>
       <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg"/>
       <link rel="alternate icon" href="/assets/img/favicon.ico"/>
@@ -68,7 +70,7 @@ templ Base(props ...SEOProps) {
           "@type": "WebSite",
           "name": "CleanMyBox",
           "url": "https://cleanmybox.io",
-          "description": "One-shot Gmail cleanup with newsletter detection, safe unsubscribe, and AI actions: delete, archive, or move to spam.",
+          "description": "Email cleaner for Gmail and Outlook with newsletter detection, safe unsubscribe, and AI actions.",
           "inLanguage": "en"
         }
       </script>
@@ -85,8 +87,42 @@ templ Base(props ...SEOProps) {
         <script type="application/ld+json">
           {
             "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "CleanMyBox",
+            "applicationCategory": "BusinessApplication",
+            "applicationSubCategory": "Email Cleanup Software",
+            "operatingSystem": "Web",
+            "url": "https://cleanmybox.io",
+            "description": "CleanMyBox helps people clean Gmail and Outlook inboxes with newsletter detection, unsubscribe automation, and conservative AI actions.",
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Clean",
+                "price": "5",
+                "priceCurrency": "USD"
+              },
+              {
+                "@type": "Offer",
+                "name": "CleanPlus",
+                "price": "11",
+                "priceCurrency": "USD"
+              }
+            ]
+          }
+        </script>
+        <script type="application/ld+json">
+          {
+            "@context": "https://schema.org",
             "@type": "FAQPage",
             "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Which mailbox providers does CleanMyBox support?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "CleanMyBox currently supports Gmail and Outlook mailboxes through secure OAuth login."
+                }
+              },
               {
                 "@type": "Question",
                 "name": "Do you keep my mailbox data?",
@@ -100,7 +136,7 @@ templ Base(props ...SEOProps) {
                 "name": "How does Clean work?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks as read, moves to trash, and attempts safe unsubscribe actions."
+                  "text": "Clean detects newsletters using email headers like List-Unsubscribe and List-Id, then marks messages as read, moves them to trash, and attempts safe unsubscribe actions."
                 }
               },
               {
