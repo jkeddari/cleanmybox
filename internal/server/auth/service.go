@@ -77,7 +77,6 @@ func NewService(cfg Config) *Service {
 			ClientSecret: cfg.ClientSecret,
 			RedirectURL:  cfg.RedirectURL,
 			Scopes: []string{
-				"https://www.googleapis.com/auth/gmail.readonly",
 				"https://www.googleapis.com/auth/gmail.modify",
 			},
 			Endpoint: google.Endpoint,
