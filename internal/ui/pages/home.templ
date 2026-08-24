@@ -8,8 +8,8 @@ import (
 
 templ Home(loggedIn bool, email string) {
   @layouts.Base(layouts.SEOProps{
-    Title:       "CleanMyBox - Clean Gmail and Outlook inboxes in one run",
-    Description: "Clean Gmail and Outlook inboxes in one run. Remove newsletters, unsubscribe safely, and use AI actions to delete, archive, move to spam, or keep important emails.",
+    Title:       "Email Cleaner for Gmail & Outlook | CleanMyBox",
+    Description: "Clean Gmail and Outlook inboxes in one run. Unsubscribe from newsletters, remove promotional email, and protect important messages with conservative cleanup actions.",
     Path:        "/",
     Robots:      "index, follow",
   }) {
@@ -18,23 +18,23 @@ templ Home(loggedIn bool, email string) {
     <main class="mx-auto w-full max-w-6xl space-y-20 px-4 py-10 sm:px-6 lg:px-8">
       <section class="grid gap-10 py-8 lg:grid-cols-2 lg:items-center">
         <div class="space-y-6">
-          <span class="inline-flex rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">Gmail and Outlook supported</span>
+          <span class="inline-flex rounded-full border border-border bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">Gmail and Outlook email cleaner</span>
           <h1 class="text-5xl font-bold leading-tight tracking-tight sm:text-6xl">
-            Clean your inbox
+            Clean your Gmail or Outlook inbox
             <br/>
-            <span class="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">without breaking important mail.</span>
+            <span class="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">in one focused run.</span>
           </h1>
           <p class="max-w-2xl text-lg text-muted-foreground">
-            CleanMyBox is an email cleaner for Gmail and Outlook that finds newsletters, attempts safe unsubscribe flows, and applies conservative AI actions with a default keep-on-uncertainty policy.
+            CleanMyBox is an email cleaner for Gmail and Outlook that finds newsletters, helps you bulk-unsubscribe from recurring promotions, and applies conservative cleanup actions with a default keep-on-uncertainty policy.
           </p>
 
           <div class="flex flex-wrap items-center gap-3">
               if loggedIn {
                 <a href="#pricing" class="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90">Choose Clean or CleanPlus</a>
               } else {
-                <a href="/login" class="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90">Login</a>
+                <a href="/login" class="rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90">Connect your mailbox</a>
               }
-            <span class="text-sm text-muted-foreground">One-shot payment. No account retention.</span>
+            <span class="text-sm text-muted-foreground">One-shot payment. No subscription.</span>
           </div>
         </div>
 
@@ -56,15 +56,15 @@ templ Home(loggedIn bool, email string) {
 
       <section id="features" class="py-24">
         <div class="mx-auto max-w-3xl space-y-3 text-center">
-          <h2 class="text-4xl font-bold tracking-tight">Mailbox cleanup that stays fast and safe</h2>
-          <p class="text-lg text-muted-foreground">A focused inbox cleaning workflow for Gmail and Outlook, with conservative decisions, production-grade reliability, and real-time execution visibility.</p>
+          <h2 class="text-4xl font-bold tracking-tight">An email cleaner that stays fast and safe</h2>
+          <p class="text-lg text-muted-foreground">A focused inbox cleaning workflow for Gmail and Outlook, built for newsletter cleanup, bulk unsubscribe, and conservative decisions.</p>
         </div>
         <div class="mx-auto mt-16 grid max-w-6xl gap-8 md:grid-cols-2 lg:grid-cols-3">
           @FeatureCard("scan", "Header-based newsletter detection", "Use RFC signals like List-Unsubscribe and List-Id to find bulk email precisely.")
           @FeatureCard("shield", "Automatic unsubscribe flow", "Attempt unsubscribe links safely and keep an auditable success or failure trail.")
           @FeatureCard("spark", "Action-based AI for CleanPlus", "Choose the safest action per email: delete, archive, move to spam, or keep when unsure.")
           @FeatureCard("lock", "Security-first by design", "Run with short-lived OAuth sessions and avoid long-term mailbox data retention.")
-          @FeatureCard("server", "Go-native resilient backend", "Process jobs with idempotent webhook handling and robust worker execution.")
+          @FeatureCard("scan", "Bulk newsletter cleanup", "Find recurring promotional email without manually opening hundreds of messages.")
           @FeatureCard("pulse", "Live action monitoring", "Track processing progress and action counters in real time with stalled-job detection.")
         </div>
       </section>
@@ -89,6 +89,19 @@ templ Home(loggedIn bool, email string) {
               <p class="text-sm font-semibold">Best for</p>
               <p class="mt-1 text-sm text-muted-foreground">Newsletter cleanup, bulk inbox decluttering, safe unsubscribe flows, and conservative AI-assisted triage.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-10">
+        <div class="mx-auto max-w-6xl rounded-3xl border border-border bg-card/60 p-8">
+          <div class="max-w-3xl space-y-3">
+            <h2 class="text-3xl font-bold tracking-tight">Choose your inbox guide</h2>
+            <p class="text-base text-muted-foreground">Learn how to connect Gmail or Outlook, clean newsletter clutter, and use CleanPlus AI-assisted classification before you start.</p>
+          </div>
+          <div class="mt-6 grid gap-3 sm:grid-cols-2">
+            <a href="/gmail-inbox-cleaner" class="rounded-2xl border border-border bg-background p-4 text-sm font-semibold hover:bg-muted">Gmail inbox guide</a>
+            <a href="/outlook-inbox-cleaner" class="rounded-2xl border border-border bg-background p-4 text-sm font-semibold hover:bg-muted">Outlook inbox guide</a>
           </div>
         </div>
       </section>

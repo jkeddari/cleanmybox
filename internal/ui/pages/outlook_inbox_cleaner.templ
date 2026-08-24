@@ -1,0 +1,61 @@
+package pages
+
+templ OutlookInboxCleaner(loggedIn bool, email string) {
+  @SEOPage(loggedIn, email, SEOPageProps{
+    Title:       "How to Clean an Outlook Inbox Safely | CleanMyBox",
+    Description: "Learn how to clean an Outlook or Microsoft 365 inbox with CleanMyBox, unsubscribe from newsletters, and use CleanPlus AI to help identify spam, phishing, and potentially fraudulent messages.",
+    Path:        "/outlook-inbox-cleaner",
+    Eyebrow:     "Outlook inbox guide",
+    H1:          "How to clean an Outlook inbox safely",
+    Intro:       "This guide explains how CleanMyBox connects to Outlook.com and Microsoft 365, cleans newsletter clutter, and uses CleanPlus AI to help identify spam, phishing, and other potentially fraudulent messages while protecting uncertain mail.",
+    Sections: []SEOPageSection{
+      {
+        Heading: "1. Connect your Outlook mailbox",
+        Body:    "Select Connect your mailbox on CleanMyBox and choose Continue with Outlook. Microsoft handles authentication through its identity platform. Sign in to the intended Outlook.com or Microsoft 365 account, review the requested permissions, and approve the connection before returning to CleanMyBox.",
+        Items: []string{
+          "Open CleanMyBox and select Connect your mailbox.",
+          "Choose Continue with Outlook and sign in through Microsoft.",
+          "Review the requested mail permissions and approve the connection.",
+          "Return to CleanMyBox and choose the Clean or CleanPlus plan.",
+        },
+      },
+      {
+        Heading: "2. What the connection permissions mean",
+        Body:    "CleanMyBox requests the permissions required to read and modify messages during a cleanup run, along with basic account information needed to identify the connected mailbox. In a Microsoft 365 organization, an administrator may need to approve access according to the organization’s consent policy.",
+        Items: []string{
+          "Authentication takes place on Microsoft’s sign-in page.",
+          "Mail access is used for the selected cleanup run.",
+          "Organization policies may require administrator consent.",
+          "One provider is connected per cleanup run.",
+        },
+      },
+      {
+        Heading: "3. How the Outlook cleanup works",
+        Body:    "The standard Clean plan identifies newsletters and recurring promotional email using bulk-email signals such as List-Unsubscribe and List-Id. It attempts official unsubscribe methods when available, marks matching messages as read, and applies cleanup actions while protecting important or uncertain mail.",
+        Items: []string{
+          "Detect newsletters and recurring promotional senders.",
+          "Attempt official unsubscribe flows when available.",
+          "Move relevant cleanup targets to the trash or the appropriate mailbox folder.",
+          "Keep important or uncertain messages instead of applying a risky blanket rule.",
+        },
+      },
+      {
+        Heading: "4. What CleanPlus AI adds",
+        Body:    "CleanPlus adds AI-assisted classification to the mailbox scan. It can help distinguish useless newsletters, legitimate older messages, spam, phishing, and other potentially malicious or fraudulent email, then select a conservative action such as delete, archive, move to spam, or keep. Messages that remain uncertain are kept rather than guessed at.",
+        Items: []string{
+          "Classify promotional and newsletter clutter as useless when appropriate.",
+          "Help identify spam, phishing, and potentially malicious messages.",
+          "Archive useful but older messages when the classification supports it.",
+          "Keep messages when the model is uncertain or the content may be important.",
+        },
+      },
+      {
+        Heading: "5. Review the result",
+        Body:    "When the run is complete, CleanMyBox provides a report showing scanned messages, detected newsletters, unsubscribe attempts, spam actions, deleted messages, archived messages, and items kept. This gives you a clear record of what happened during the cleanup.",
+      },
+    },
+    Related: []SEOPageLink{
+      {Href: "/gmail-inbox-cleaner", Label: "Read the Gmail inbox guide"},
+    },
+  })
+}

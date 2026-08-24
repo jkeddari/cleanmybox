@@ -2,20 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://cleanmybox.io/</loc>
-    <lastmod>2026-03-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-08-24</lastmod>
+  </url>
+  <url>
+    <loc>https://cleanmybox.io/gmail-inbox-cleaner</loc>
+    <lastmod>2026-08-24</lastmod>
+  </url>
+  <url>
+    <loc>https://cleanmybox.io/outlook-inbox-cleaner</loc>
+    <lastmod>2026-08-24</lastmod>
+  </url>
+  <url>
+    <loc>https://cleanmybox.io/guides</loc>
+    <lastmod>2026-08-24</lastmod>
   </url>
   <url>
     <loc>https://cleanmybox.io/legal/privacy</loc>
     <lastmod>2026-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
   </url>
   <url>
     <loc>https://cleanmybox.io/legal/terms</loc>
     <lastmod>2026-03-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
   </url>
 </urlset>

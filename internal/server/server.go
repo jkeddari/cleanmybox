@@ -60,6 +60,15 @@ func (s *Server) routes() http.Handler {
 		http.ServeFile(w, r, filepath.Clean("assets/sitemap.xml"))
 	})
 	mux.HandleFunc("GET /", s.HomePage)
+	mux.HandleFunc("GET /gmail-inbox-cleaner", s.GmailInboxCleanerPage)
+	mux.HandleFunc("GET /outlook-inbox-cleaner", s.OutlookInboxCleanerPage)
+	mux.HandleFunc("GET /bulk-unsubscribe-newsletters", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/guides", http.StatusMovedPermanently)
+	})
+	mux.HandleFunc("GET /guides", s.GuidesPage)
+	mux.HandleFunc("GET /guides/clean-up-gmail-inbox", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/gmail-inbox-cleaner", http.StatusMovedPermanently)
+	})
 	mux.HandleFunc("GET /login", s.LoginPage)
 	mux.HandleFunc("GET /legal/privacy", s.PrivacyPage)
 	mux.HandleFunc("GET /legal/terms", s.TermsPage)

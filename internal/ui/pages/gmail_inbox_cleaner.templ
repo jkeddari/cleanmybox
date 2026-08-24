@@ -1,0 +1,61 @@
+package pages
+
+templ GmailInboxCleaner(loggedIn bool, email string) {
+  @SEOPage(loggedIn, email, SEOPageProps{
+    Title:       "How to Clean a Gmail Inbox Safely | CleanMyBox",
+    Description: "Learn how to clean a Gmail inbox with CleanMyBox, unsubscribe from newsletters, and use CleanPlus AI to help identify spam, phishing, and potentially fraudulent messages.",
+    Path:        "/gmail-inbox-cleaner",
+    Eyebrow:     "Gmail inbox guide",
+    H1:          "How to clean a Gmail inbox safely",
+    Intro:       "This guide explains how CleanMyBox connects to Gmail, cleans newsletter clutter, and uses CleanPlus AI to help identify spam, phishing, and other potentially fraudulent messages while protecting uncertain mail.",
+    Sections: []SEOPageSection{
+      {
+        Heading: "1. Connect your Gmail account",
+        Body:    "Select Connect your mailbox on CleanMyBox and choose Continue with Google. Google handles authentication directly on its own sign-in page. After you sign in, review the requested permissions and approve the connection so CleanMyBox can scan and manage the messages required for the cleanup.",
+        Items: []string{
+          "Open CleanMyBox and select Connect your mailbox.",
+          "Choose Continue with Google and select the Gmail account you want to clean.",
+          "Review the requested access before approving the connection.",
+          "Return to CleanMyBox and choose the Clean or CleanPlus plan.",
+        },
+      },
+      {
+        Heading: "2. A Google warning may be normal",
+        Body:    "Depending on the account and the current verification status of the application, Google may display an unverified-app warning during the connection flow. This is a Google OAuth notice, not a Gmail error or a problem with your mailbox. Review the requested access carefully and continue only if you recognize and trust CleanMyBox. Never enter your Google password on CleanMyBox: authentication should take place on Google’s own page.",
+        Items: []string{
+          "The warning can appear while Google’s application verification review is incomplete.",
+          "Check the permissions shown by Google before continuing.",
+          "Google Workspace administrators may restrict access to unverified applications.",
+          "You can review or remove CleanMyBox from your Google Account’s third-party connections.",
+        },
+      },
+      {
+        Heading: "3. How the Gmail cleanup works",
+        Body:    "The standard Clean plan identifies newsletters and recurring promotional email using signals such as List-Unsubscribe and List-Id. It attempts official unsubscribe methods when available, marks matching messages as read, and moves cleanup targets to the trash while keeping uncertain messages.",
+        Items: []string{
+          "Detect newsletters and recurring promotional senders.",
+          "Attempt official unsubscribe flows when available.",
+          "Move relevant cleanup targets to the trash.",
+          "Keep uncertain messages instead of applying a risky blanket rule.",
+        },
+      },
+      {
+        Heading: "4. What CleanPlus AI adds",
+        Body:    "CleanPlus adds AI-assisted classification to the mailbox scan. It can help distinguish useless newsletters, legitimate older messages, spam, phishing, and other potentially malicious or fraudulent email, then select a conservative action such as delete, archive, move to spam, or keep. Messages that remain uncertain are kept rather than guessed at.",
+        Items: []string{
+          "Classify promotional and newsletter clutter as useless when appropriate.",
+          "Help identify spam, phishing, and potentially malicious messages.",
+          "Archive useful but older messages when the classification supports it.",
+          "Keep messages when the model is uncertain or the content may be important.",
+        },
+      },
+      {
+        Heading: "5. Review the result",
+        Body:    "When the run is complete, CleanMyBox provides a report showing scanned messages, detected newsletters, unsubscribe attempts, spam actions, deleted messages, archived messages, and items kept. This makes the result auditable instead of hiding the cleanup behind a single button.",
+      },
+    },
+    Related: []SEOPageLink{
+      {Href: "/outlook-inbox-cleaner", Label: "Read the Outlook inbox guide"},
+    },
+  })
+}

@@ -20,6 +20,19 @@ tasks:
     cmds:
       - task --parallel templ tailwind
 
+  preview:
+    desc: Start the public web preview without OAuth, Stripe, or PostgreSQL
+    cmds:
+      - task --parallel preview-server preview-templ tailwind
+
+  preview-server:
+    cmds:
+      - go run ./cmd/preview
+
+  preview-templ:
+    cmds:
+      - go run github.com/a-h/templ/cmd/templ@latest generate --watch
+
   build-templ:
     desc: Generate templ files once
     cmds:

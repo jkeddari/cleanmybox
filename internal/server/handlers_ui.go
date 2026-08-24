@@ -17,6 +17,24 @@ func (s *Server) HomePage(w http.ResponseWriter, r *http.Request) {
 	s.render(w, r, pages.Home(loggedIn, email))
 }
 
+func (s *Server) GmailInboxCleanerPage(w http.ResponseWriter, r *http.Request) {
+	loggedIn := s.authSvc.IsLoggedIn(r)
+	email, _ := s.authSvc.EmailFromRequest(r)
+	s.render(w, r, pages.GmailInboxCleaner(loggedIn, email))
+}
+
+func (s *Server) OutlookInboxCleanerPage(w http.ResponseWriter, r *http.Request) {
+	loggedIn := s.authSvc.IsLoggedIn(r)
+	email, _ := s.authSvc.EmailFromRequest(r)
+	s.render(w, r, pages.OutlookInboxCleaner(loggedIn, email))
+}
+
+func (s *Server) GuidesPage(w http.ResponseWriter, r *http.Request) {
+	loggedIn := s.authSvc.IsLoggedIn(r)
+	email, _ := s.authSvc.EmailFromRequest(r)
+	s.render(w, r, pages.Guides(loggedIn, email))
+}
+
 func (s *Server) LoginPage(w http.ResponseWriter, r *http.Request) {
 	loggedIn := s.authSvc.IsLoggedIn(r)
 	email, _ := s.authSvc.EmailFromRequest(r)

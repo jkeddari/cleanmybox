@@ -1,0 +1,39 @@
+package pages
+
+import (
+  "github.com/jkeddari/cleanmybox/internal/ui/blocks"
+  "github.com/jkeddari/cleanmybox/internal/ui/layouts"
+)
+
+templ Guides(loggedIn bool, email string) {
+  @layouts.Base(layouts.SEOProps{
+    Title:       "Gmail & Outlook Inbox Guides | CleanMyBox",
+    Description: "Practical Gmail and Outlook inbox guides covering secure connection, newsletter cleanup, spam detection, and CleanPlus AI-assisted email triage.",
+    Path:        "/guides",
+    Robots:      "index, follow",
+  }) {
+    @blocks.Navbar(loggedIn, email)
+
+    <main class="mx-auto w-full max-w-5xl space-y-12 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+      <section class="space-y-4 rounded-3xl border border-border bg-card/60 p-6 shadow-sm sm:p-10">
+        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Resources</p>
+        <h1 class="max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">Gmail and Outlook inbox guides</h1>
+        <p class="max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">Learn how to connect your mailbox, clean newsletter clutter, and use CleanPlus AI to help identify suspicious email while protecting important messages.</p>
+      </section>
+
+      <section class="grid gap-4 sm:grid-cols-2">
+        @GuideCard("/gmail-inbox-cleaner", "Gmail inbox cleanup guide", "Learn how to connect Gmail, understand the Google warning, clean newsletters, and use CleanPlus AI-assisted classification.")
+        @GuideCard("/outlook-inbox-cleaner", "Outlook inbox cleanup guide", "Learn how to connect Outlook.com or Microsoft 365, clean recurring email, and use CleanPlus AI-assisted classification.")
+      </section>
+    </main>
+
+    @blocks.Footer()
+  }
+}
+
+templ GuideCard(href, title, description string) {
+  <a href={ href } class="group rounded-2xl border border-border bg-card p-6 text-card-foreground shadow-sm transition-colors hover:bg-muted">
+    <h2 class="text-lg font-semibold leading-6 group-hover:underline">{ title }</h2>
+    <p class="mt-2 text-sm leading-6 text-muted-foreground">{ description }</p>
+  </a>
+}
